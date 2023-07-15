@@ -1,0 +1,131 @@
+@font-face {
+    font-family: "Nanum";
+    src: url("../assets/fonts/NanumBarunGothic.otf") format("opentype");
+}
+
+* {
+    font-family: "Nanum";
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+    min-height: 700px;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 400px;
+    height: 700px;
+
+    border-radius: 20px;
+
+    box-sizing: border-box;
+    padding: 50px;
+    gap: 30px;
+}
+
+p {
+    margin: 0;
+    text-align: center;
+
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.smallp {
+    margin-top: 15px;
+    text-align: center;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.signup-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+
+    gap: 10px;
+}
+
+label {
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+.username-input {
+    display: flex;
+    width: 300px;
+
+    gap: 10px;
+}
+.username-input>button {
+    width: 100px;
+    height: 50px;
+
+    border: transparent;
+    border-radius: 10px;
+
+    padding: 0;
+    font-size: 0.9rem;
+
+    color: white;
+    background-color: #00ADB5;
+
+    cursor: pointer;
+    transition: all 1s;
+}
+.username-input>button:hover {
+    background-color: #0A8FCC;
+}
+
+.username-input>input{
+    display: flex;
+    justify-content: center;
+    width: inherit;
+    height: 50px;
+
+    padding: 10px;
+    color: #393E46;
+    font-size: 0.8rem;
+
+    border: 1px solid #C2C2C2;
+    border-radius: 10px;
+    box-sizing: border-box;
+    transition: all 1s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #00ADB5;
+}
+
+.signup-section>button {
+    width: 300px;
+    height: 50px;
+
+    margin-top: 13px;
+
+    border: transparent;
+    border-radius: 10px;
+
+    font-size: 1rem;
+
+    color: white;
+    background-color: #00ADB5;
+
+    cursor: pointer;
+    transition: all 1s;
+}
+
+.signup-section>button:hover {
+    background-color: #0A8FCC;
+}

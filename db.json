@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "nickname": "qwer",
+      "id": 1
+    }
+  ],
+  "posts": [
+    {
+      "id": "eceff6d7-540a-4a19-af33-c2e1baa2905a",
+      "title": "ㅁㅁㅁㅁㅁ",
+      "content": "ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
+      "username": "asdf",
+      "createdAt": "2023-07-15T21:36:00",
+      "modifiedAt": "",
+      "comments": [{},{},{},{}],
+      "countLikes": [{},{},{},{}]
+    }
+  ]
+}
