@@ -5,6 +5,18 @@
       "password": "qwer",
       "nickname": "qwer",
       "id": 1
+    },
+    {
+      "username": "qwer111",
+      "password": "asdf",
+      "nickname": "asdf",
+      "id": 2
+    },
+    {
+      "username": "aaaaaaaaaaaaa",
+      "password": "aaaaaaaaaa",
+      "nickname": "1111111111",
+      "id": 3
     }
   ],
   "posts": [
@@ -15,8 +27,18 @@
       "username": "asdf",
       "createdAt": "2023-07-15T21:36:00",
       "modifiedAt": "",
-      "comments": [{},{},{},{}],
-      "countLikes": [{},{},{},{}]
+      "comments": [
+        {},
+        {},
+        {},
+        {}
+      ],
+      "countLikes": [
+        {},
+        {},
+        {},
+        {}
+      ]
     }
   ]
 }

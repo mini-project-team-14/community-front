@@ -1,12 +1,12 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes, Switc } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from '../pages/Login'
 import Signup from '../pages/Signup'
 import Board from '../pages/Board'
 import Detail from '../pages/Detail'
 import Editor from '../pages/Editor'
 import TestPage from '../pages/TestPage'
-import Layout from '../components/Layout'
+import Layout from '../components/common/Layout'
 
 function Router() {
     return (
