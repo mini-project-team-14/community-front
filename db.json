@@ -17,6 +17,77 @@
       "password": "aaaaaaaaaa",
       "nickname": "1111111111",
       "id": 3
+    },
+    {
+      "username": "asdf",
+      "password": "asdf",
+      "nickname": "asdf",
+      "id": 4
+    },
+    {
+      "username": "qwer",
+      "password": "aaaaaaaa",
+      "id": 5
+    },
+    {
+      "username": "qwerqw",
+      "password": "rqwerqwer",
+      "id": 6
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 7
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 8
+    },
+    {
+      "username": "",
+      "password": "qwer",
+      "id": 9
+    },
+    {
+      "username": "",
+      "password": "qwer",
+      "id": 10
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 11
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 12
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 13
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 14
+    },
+    {
+      "id": 15
+    },
+    {
+      "id": 16
+    },
+    {
+      "id": 17
+    },
+    {
+      "username": "qwerttt",
+      "password": "qwer",
+      "nickname": "qwer",
+      "id": 18
     }
   ],
   "posts": [
@@ -39,6 +110,114 @@
         {},
         {}
       ]
+    },
+    {
+      "id": "065886df-3241-4ab4-82c2-64ffc66d9848",
+      "title": "ㅁㅂㅂㅂ",
+      "content": "ㅁㄴㅇㄻㄴㅇㄻ",
+      "username": "asdf",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
+    },
+    {
+      "id": "eba0787c-1105-48cc-b96f-dc48c8dba428",
+      "title": "새글 실험",
+      "content": "댓글 실험하기",
+      "username": "asdf",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
+    },
+    {
+      "id": "9cdda0b2-8260-4252-85ab-3b52d5dd9a4d",
+      "title": "댓글 실험",
+      "content": "댓글 실험하기",
+      "username": "김OO",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
+    }
+  ],
+  "links": [
+    {
+      "id": 1,
+      "url": "/",
+      "name": "로그인"
+    },
+    {
+      "id": 2,
+      "url": "/signup",
+      "name": "회원가입"
+    },
+    {
+      "id": 3,
+      "url": "/board",
+      "name": "게시판"
+    },
+    {
+      "id": 4,
+      "url": "/editor",
+      "name": "작성"
+    },
+    {
+      "id": 5,
+      "url": "/test",
+      "name": "테스트"
+    },
+    {
+      "id": 6,
+      "url": "/board",
+      "name": "자유게시판"
+    },
+    {
+      "id": 7,
+      "url": "/test",
+      "name": "SPRING"
+    }
+  ],
+  "login": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 3
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 4
+    },
+    {
+      "username": "ㅂㅈㄷ",
+      "password": "rqwer",
+      "id": 5
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 6
+    },
+    {
+      "username": "qwer",
+      "password": "qwer",
+      "id": 7
+    }
+  ],
+  "comments": [
+    {
+      "comment": "asdf",
+      "username": "김OO",
+      "createdAt": "2023-07-17",
+      "id": 1
     }
   ]
 }

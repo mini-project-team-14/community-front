@@ -1,7 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-query'
 import { getUsers } from '../api/users';
-import "../styles/Editor.css"
 
 function TestPage() {
 
