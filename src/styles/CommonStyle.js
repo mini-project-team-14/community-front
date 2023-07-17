@@ -71,8 +71,9 @@ export const StInput = styled.input`
 
 export const StButton = styled.button`
     width: ${({ width }) => width || "inherit"};
-    height: 50px;
-    background-color: #00ADB5;
+    min-width: ${({ width }) => width};
+    height: ${({ height }) => height || "50px"};
+    background-color: ${({ color }) => color || "#00ADB5"};
 
     border: transparent;
     border-radius: 10px;
@@ -89,8 +90,57 @@ export const StButton = styled.button`
     }
 `
 
-export const StSignupLink = styled.span`
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
+export const StEditorInput = styled.input`
+    width: ${({ width }) => width || "inherit"};
+    height: ${({ height }) => height || "inherit"};
+
+    border: 2px solid transparent;
+    border-radius: 10px;
+    
+    font-size: ${({ size }) => size || "1.25rem"};
+
+    padding: 5px 15px;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+        border: 2px solid #00ADB5;
+    }
+`
+
+export const StEditorTextarea = styled.textarea`
+    width: ${({ width }) => width || "inherit"};
+    height: auto;
+    min-height: 300px;
+
+    border: 2px solid transparent;
+    border-radius: 10px;
+    
+    font-size: 1.25rem;
+
+    padding: 10px 15px;
+
+    resize: vertical;
+
+    &:focus {
+        outline: none;
+        border: 2px solid #00ADB5;
+    }
+`
+
+export const StMainSection = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    height: auto;
+    min-height: 400px;
+    background-color: #D4D4D4;
+
+    border-radius: 10px;
+
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 20px;
+
+    gap: 20px;
 `

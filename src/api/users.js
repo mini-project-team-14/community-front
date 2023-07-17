@@ -9,7 +9,11 @@ const getUsers = async () => {
 
 // 추가
 const addUser = async (newUser) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/users`, newUser);
+    await axios.post(`http://13.125.15.196:8080/api/user/signup`, newUser)
+    .then(response => {
+        console.log(response);
+        console.log(response.data);
+    });
 }
 
 export { getUsers, addUser };

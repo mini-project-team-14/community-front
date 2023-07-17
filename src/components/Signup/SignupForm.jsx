@@ -109,7 +109,7 @@ function SignupForm() {
                             value={username}
                             onChange={onChangeHandler}
                         />
-                        <C.StButton width={"40%"} size={"1rem"} onClick={(event) => {event.preventDefault()}}>중복확인</C.StButton>
+                        <C.StButton width={"40%"} size={"1rem"} onClick={(event) => { event.preventDefault() }}>중복확인</C.StButton>
                     </S.StUsernameForm>
                     <C.StInput
                         name="password"
@@ -127,9 +127,7 @@ function SignupForm() {
                     />
                     <C.StButton weight={"700"} onClick={handleSubmitButtonClick}>회원가입</C.StButton>
                     <StyledLink to={`/`} color="#00ADB5">
-                        <C.StSignupLink>
-                            로그인하기
-                        </C.StSignupLink>
+                        로그인하기
                     </StyledLink>
                 </C.StLoginForm>
             </C.StContentWrapper>

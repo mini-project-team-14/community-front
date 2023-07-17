@@ -30,11 +30,12 @@ export const StNavList = styled.div`
 
     height: inherit;
 
+    font-size: 1.25rem;
+
     border: transparent;
 
     &:hover {
         outline: none;
-        border-bottom: 4px solid #0A8FCC;
         font-weight: 700;
     }
 `
