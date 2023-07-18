@@ -16,10 +16,14 @@ function Router() {
                 <Route path="/signup" element={<Signup />} />
                 <Route element={<Layout />}>
                     <Route path="/board" element={<Board />} />
+                    <Route path="/board/:name" element={<Board />} />
+                    <Route path="/board/:name/detail/:id" element={<Detail />} />
                     <Route path="/detail" element={<Detail />} />
                     <Route path="/detail/:id" element={<Detail />} />
                     <Route path="/editor" element={<Editor />} />
                     <Route path="/editor/:id" element={<Editor />} />
+                    <Route path="/board/:name/editor" element={<Editor />} />
+                    <Route path="/board/:name/detail/:id/editor" element={<Editor />} />
                     <Route path="/test" element={<TestPage />} />
                 </Route>
             </Routes>

@@ -12,8 +12,8 @@ function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const { data } = useQuery("users", getUsers);
-    const navigate = useNavigate();
+    // const { data } = useQuery("users", getUsers);
+    // const navigate = useNavigate();
 
     // 입력값을 감지하는 함수
     const onChangeHandler = (event) => {
@@ -84,7 +84,7 @@ function LoginForm() {
                 <C.StLoginForm>
                     <C.StInput name="username" type="text" value={username} onChange={onChangeHandler} placeholder="아이디" />
                     <C.StInput name="password" type="password" value={password} onChange={onChangeHandler} placeholder="비밀번호" />
-                    <C.StButton onClick={handleSubmitButtonClick} weight={"700"}>로그인</C.StButton>
+                    <C.StButton onClick={handleSubmitButtonClick} size={"1.25rem"} weight={"700"}>로그인</C.StButton>
                     <StyledLink to={`/signup`} color="#00ADB5">
                         회원가입
                     </StyledLink>

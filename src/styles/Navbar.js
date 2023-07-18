@@ -9,10 +9,11 @@ export const StNavbar = styled.div`
     align-items: center;
     
     height: 56px;
-    background-color: #eeeeee;
+    background-color: #393e46;
 
-    border: transparent;
-    border-bottom: 2px solid black;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    /* border-bottom: 3px solid gray; */
     color: black;
     font-size: 1.5rem;
     font-weight: 500;
@@ -31,11 +32,17 @@ export const StNavList = styled.div`
     height: inherit;
 
     font-size: 1.25rem;
+    color: ${props => props.isTrue ? "#03F2FD" : "#eeeeee"};
 
-    border: transparent;
+    border-bottom: 4px solid ${props => props.isTrue ? "#03F2FD" : "transparent"};
+    cursor: pointer;
 
-    &:hover {
+    box-sizing: border-box;
+    transition: all 0.5s;
+    
+    &:hover, &:active, &:focus {
         outline: none;
-        font-weight: 700;
+        color: #03F2FD;
+        /* border-bottom: 4px solid #03F2FD; */
     }
 `

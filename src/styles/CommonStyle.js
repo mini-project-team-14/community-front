@@ -78,7 +78,7 @@ export const StButton = styled.button`
     border: transparent;
     border-radius: 10px;
     
-    font-size: ${({ size }) => size || "1.25rem"};
+    font-size: ${({ size }) => size || "inherit"};
     font-weight: ${({ weight }) => weight || "500"};
     color: white;
 
@@ -86,7 +86,7 @@ export const StButton = styled.button`
     transition: all 0.5s;
 
     &:hover {
-        background-color: #0A8FCC;
+        background-color: ${({hovercolor}) => hovercolor || "#0A8FCC"};
     }
 `
 
@@ -98,8 +98,9 @@ export const StEditorInput = styled.input`
     border-radius: 10px;
     
     font-size: ${({ size }) => size || "1.25rem"};
+    font-weight: 700;
 
-    padding: 5px 15px;
+    padding: 5px 10px;
     box-sizing: border-box;
 
     &:focus {
@@ -118,7 +119,7 @@ export const StEditorTextarea = styled.textarea`
     
     font-size: 1.25rem;
 
-    padding: 10px 15px;
+    padding: 10px 10px;
 
     resize: vertical;
 

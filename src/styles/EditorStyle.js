@@ -20,7 +20,7 @@ export const StEditorInputSection = styled.form`
 
 export const StEditorButtonSection = styled.form`
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 
     width: inherit;
 `

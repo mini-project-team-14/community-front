@@ -6,7 +6,7 @@ export const StDetailContentSection = styled.div`
 
     width: inherit;
     
-    gap: 20px;
+    gap: 10px;
 `
 
 export const StDetail = styled.div`
@@ -14,17 +14,20 @@ export const StDetail = styled.div`
     justify-content: space-between;
 
     width: 100%;
-    height: ${({height}) => height || "70px"};
-    min-height: ${({height}) => height || "70px"};
+    height: ${({ height }) => height || "auto"};
+    min-height: ${({ height }) => height || "70px"};
 
     background-color: white;
     border: 2px solid transparent;
     border-radius: 10px;
+
+    font-size: 1.25rem;
     
     gap: 10px;
 
     box-sizing: border-box;
     padding: 10px;
+    padding-bottom: ${({bottom}) => bottom};
 `
 
 export const StDetailTitleItemArea = styled.div`
@@ -37,26 +40,27 @@ export const StDetailTitleItemArea = styled.div`
 export const StDetailTitleItemTop = styled.div`
     display: flex;
     font-size: 1.25rem;
+    font-weight: 700;
 `
 
 export const StDetailTitleItemBottom = styled.div`
     display: flex;
-    width: 100%;
+    justify-content: space-between;
 
-    font-size: 0.875rem;
+    font-size: 1rem;
+    font-weight: 500;
     border-top: 2px solid #d4d4d4;
 `
 
-export const StDetailTitleButtonArea = styled.div`
+export const StDetailButtonArea = styled.div`
     display: flex;
+    justify-content: space-between;
     gap: 10px;
 `
 
-export const StEditorButtonSection = styled.form`
+export const StDetailButtonAreaChild = styled.div`
     display: flex;
-    justify-content: flex-end;
-
-    width: inherit;
+    gap: 10px;
 `
 
 export const StDetailCommentSection = styled.div`
@@ -93,7 +97,8 @@ export const StCommentListItem = styled.li`
     justify-content: space-between;
 
     width: 100%;
-    height: 30px;
+    height: auto;
+    min-height: 30px;
 
     margin: 0;
     padding: 0;

@@ -125,7 +125,7 @@ function SignupForm() {
                         value={nickname}
                         onChange={onChangeHandler}
                     />
-                    <C.StButton weight={"700"} onClick={handleSubmitButtonClick}>회원가입</C.StButton>
+                    <C.StButton size={"1.25rem"} weight={"700"} onClick={handleSubmitButtonClick}>회원가입</C.StButton>
                     <StyledLink to={`/`} color="#00ADB5">
                         로그인하기
                     </StyledLink>
