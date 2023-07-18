@@ -1,8 +1,8 @@
-import React from 'react'
-import Router from './shared/Router'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import React from "react";
+import Router from "./shared/Router";
+import { QueryClient, QueryClientProvider } from "react-query";
 import "./App.css";
-import GlobalStyle from './styles/GlobalStyle';
+import GlobalStyle from "./styles/GlobalStyle";
 
 const queryClient = new QueryClient();
 
@@ -11,10 +11,10 @@ function App() {
     <>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
-        <Router />
+        <Router/>
       </QueryClientProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

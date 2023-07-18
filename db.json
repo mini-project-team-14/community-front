@@ -22,7 +22,7 @@
   "posts": [
     {
       "id": "eceff6d7-540a-4a19-af33-c2e1baa2905a",
-      "title": "ㅁㅁㅁㅁㅁ",
+      "title": "제목",
       "content": "ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
       "username": "asdf",
       "createdAt": "2023-07-15T21:36:00",
@@ -39,6 +39,36 @@
         {},
         {}
       ]
+    },
+    {
+      "id": "8562ff47-8533-44ac-a724-0f6ac9a30604",
+      "title": "ㄴㅇㄹㄴㅇㄹㄴㅇ",
+      "content": "ㄴㅇㄹㄴㅇㄹㅇㄴㄹㄹㅇ",
+      "username": "asdf",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
+    },
+    {
+      "id": "592697eb-f8c4-42f7-8084-e4f71dd14e58",
+      "title": "ㅎㅀㄹ",
+      "content": "ㅀㅀㄹㅀㅀㅎㄹㄹ",
+      "username": "asdf",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
+    },
+    {
+      "id": "24fcf555-a56d-4f00-b38c-51f5ca8f3fde",
+      "title": "ㅇㅇㅇ",
+      "content": "ㅇㅇ",
+      "username": "asdf",
+      "createdAt": "",
+      "modifiedAt": "",
+      "comments": [],
+      "countLikes": []
     }
   ]
 }
