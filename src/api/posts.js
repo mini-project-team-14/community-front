@@ -12,4 +12,20 @@ const addPost = async (newPost) => {
     await axios.post(`${process.env.REACT_APP_SERVER_URL}/posts`, newPost);
 }
 
-export { getPosts, addPost };
+// 수정
+const updatePost = async (id, updatePost) => {
+    await axios.patch(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`, updatePost)
+}
+
+// 삭제
+const deletePost = async (id) => {
+    await axios.delete(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`);
+}
+
+// // 댓글 추가
+// const addComment = async (id, newComment) => {
+//     await axios.patch(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`, newComment);
+//     console.log(id, newComment);
+// }
+
+export { getPosts, addPost, updatePost, deletePost };
