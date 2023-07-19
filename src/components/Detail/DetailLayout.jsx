@@ -21,7 +21,8 @@ function DetailLayout() {
     const [commentToggle, setCommentToggle] = useState(false);
     const [boardId, setBoardId] = useState(null);
     const [comment, setComment] = useState("");
-    const { aud } = jwt_decode(cookies.login);
+    const { aud } = jwt_decode(cookies.accessToken);
+    // const { aud } = jwt_decode(cookies.login);
 
     useEffect(() => {
         setBoardId(category.find(category => category.path === path).boardId);
@@ -34,7 +35,10 @@ function DetailLayout() {
             const response = await axios.get(
                 `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
                 {
-                    headers: { Authorization: cookies.login }
+                    headers: {
+                        Authorization: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
                 }
             )
             // console.log(response)
@@ -53,7 +57,10 @@ function DetailLayout() {
     const deletePost = async (id) => {
         await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
             {
-                headers: { Authorization: cookies.login }
+                headers: {
+                    Authorization: `Bearer ${cookies.accessToken}`,
+                    RefreshToken: `Bearer ${cookies.refreshToken}`
+                }
             }
         );
     }
@@ -66,9 +73,12 @@ function DetailLayout() {
 
     // 좋아요
     const likePost = async () => {
-        await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/1/posts/${id}/like`, null,
+        await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/like`, null,
             {
-                headers: { Authorization: cookies.login }
+                headers: {
+                    Authorization: `Bearer ${cookies.accessToken}`,
+                    RefreshToken: `Bearer ${cookies.refreshToken}`
+                }
             }
         )
     }
@@ -113,7 +123,10 @@ function DetailLayout() {
 
         axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments`, newComment,
             {
-                headers: { Authorization: cookies.login }
+                headers: {
+                    Authorization: `Bearer ${cookies.accessToken}`,
+                    RefreshToken: `Bearer ${cookies.refreshToken}`
+                }
             }
         )
         setComment("");

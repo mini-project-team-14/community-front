@@ -67,7 +67,11 @@ function EditorForm() {
         try {
             await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts`, newPost,
                 {
-                    headers: { Authorization: cookies.login }
+                    // headers: { Authorization: cookies.login }
+                    headers: {
+                        Authorization: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
                 }
             );
             alert("작성 성공!");
