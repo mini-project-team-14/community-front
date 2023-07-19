@@ -9,17 +9,6 @@
   ],
   "posts": [
     {
-      "boardId": 3,
-      "id": "9a5fe8d1-334b-4942-aa2c-4ebd40fe9497",
-      "title": "aaaaaaaa",
-      "content": "aaaaaaaaaaaaaa",
-      "username": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
       "boardId": 2,
       "id": "8672729f-770c-4e82-bf39-9a1714e20174",
       "title": "asd",
@@ -45,9 +34,23 @@
           "comment": "ㅁㄴㅇㄹ",
           "username": "김OO",
           "createdAt": "2023-07-17"
+        },
+        {
+          "id": "8672729f-770c-4e82-bf39-9a1714e20174",
+          "comment": "asdf",
+          "username": "김OO",
+          "createdAt": "2023-07-17",
+          "likeLists": [
+            "nickname1",
+            "nickname2"
+          ]
         }
       ],
-      "countLikes": []
+      "likeLists": [
+        {
+          "nickname": ""
+        }
+      ]
     },
     {
       "boardId": 2,
@@ -102,166 +105,6 @@
         }
       ],
       "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "a72d4181-e0df-42c2-869b-914ccffc4a0e",
-      "title": "wqa",
-      "content": "ewrqwaaaaaaaaa",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [
-        {
-          "id": "a72d4181-e0df-42c2-869b-914ccffc4a0e",
-          "comment": "ㅁㄴㅇㄻㅁㅁㅁㅁㅁㅁㅁㅁ",
-          "username": "김OO",
-          "createdAt": "2023-07-17"
-        }
-      ],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "dbe15e3a-0d50-406e-bfe7-3f08e1b5fdff",
-      "title": "ㅁㄴㅇㄹ",
-      "content": "ㅁㄴㅇㄹ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "236e6541-2d88-4397-9817-1f06805adb1a",
-      "title": "ㅂㅂㅂㅂㅂㅂ",
-      "content": "ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "1fd73426-10e5-45dc-a6a1-2fc80566d703",
-      "title": "ㅁㄴㅇㄹ",
-      "content": "ㅁㄴㅇㄹ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "00eb00ac-7840-4fca-9064-0c31d225074c",
-      "title": "ㅂㅈㄷㄱ",
-      "content": "ㅂㅈㄷㄱ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "e22538bc-04ca-4c12-b43b-92ed41877eb7",
-      "title": "ㄻㄴㅇㄻㄴㅇㄹㄹ",
-      "content": "ㅁㄴㅇㅁㄴㅇㅁㄴㅇㄹ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 1,
-      "id": "e6f5db90-0152-49c2-8801-c6497dd74cf0",
-      "title": "ㅂㅈㄷㄱ",
-      "content": "ㅂㅈㄷㄱ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 4,
-      "id": "42af1add-485a-49eb-a923-b33b0c8946df",
-      "title": "ㅂㅈㄷㄱ",
-      "content": "ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [
-        {
-          "id": "42af1add-485a-49eb-a923-b33b0c8946df",
-          "comment": "ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-          "username": "김OO",
-          "createdAt": "2023-07-17"
-        }
-      ],
-      "countLikes": []
-    },
-    {
-      "boardId": 3,
-      "id": "c7c8117a-bcb4-40b1-a862-b9c4fe6e34fe",
-      "title": "ㅂㅂㅂㅂㅂㅂㅂ",
-      "content": "ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    },
-    {
-      "boardId": 2,
-      "id": "4dbd1670-788d-4f33-bc08-a4cf1c1668a7",
-      "title": "ㅂㅂㅂㅂㅂㅂㅂ",
-      "content": "ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ",
-      "nickname": "김OO",
-      "createdAt": "2023-07-17",
-      "modifiedAt": "",
-      "comments": [],
-      "countLikes": []
-    }
-  ],
-  "links": [
-    {
-      "id": 1,
-      "url": "/board/free",
-      "name": "자유게시판",
-      "param": "free"
-    },
-    {
-      "id": 2,
-      "url": "/board/spring",
-      "name": "SPRING",
-      "param": "spring"
-    },
-    {
-      "id": 3,
-      "url": "/board/react",
-      "name": "REACT",
-      "param": "react"
-    },
-    {
-      "id": 4,
-      "url": "/board/team",
-      "name": "조별게시판",
-      "param": "team"
-    },
-    {
-      "id": 5,
-      "url": "/",
-      "name": "로그인"
-    },
-    {
-      "id": 6,
-      "url": "/signup",
-      "name": "회원가입"
     }
   ]
 }

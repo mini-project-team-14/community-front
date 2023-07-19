@@ -7,8 +7,11 @@ import { useState } from 'react';
 import * as C from '../../styles/CommonStyle'
 import * as S from '../../styles/SignupStyle'
 import StyledLink from '../../styles/LinkStyle'
+import { useCookies } from 'react-cookie'
 
 function SignupForm() {
+    const [cookies, setCookie, removeCookie] = useCookies(['login']);
+
     const queryClient = useQueryClient();
     const mutation = useMutation(addUser, {
         onSuccess: () => {
@@ -96,8 +99,8 @@ function SignupForm() {
                     <img alt="logo" src={Logo} style={{ width: "250px" }} />
                     <img alt="rtanHi" src={RtanHi} style={{ height: "126px" }} />
                     <S.StContentText>
-                        <C.StP size={"1.5rem"}>반갑습니다!</C.StP>
-                        <C.StP size={"1.25rem"}>완주까지 함께하는 이노캠</C.StP>
+                        <C.StP $size={"1.5rem"}>반갑습니다!</C.StP>
+                        <C.StP $size={"1.25rem"}>완주까지 함께하는 이노캠</C.StP>
                     </S.StContentText>
                 </C.StContentSection>
                 <C.StLoginForm>
@@ -109,7 +112,7 @@ function SignupForm() {
                             value={username}
                             onChange={onChangeHandler}
                         />
-                        <C.StButton width={"40%"} size={"1rem"} onClick={(event) => { event.preventDefault() }}>중복확인</C.StButton>
+                        <C.StButton $width={"40%"} $size={"1rem"} onClick={(event) => { event.preventDefault() }}>중복확인</C.StButton>
                     </S.StUsernameForm>
                     <C.StInput
                         name="password"
@@ -125,8 +128,8 @@ function SignupForm() {
                         value={nickname}
                         onChange={onChangeHandler}
                     />
-                    <C.StButton size={"1.25rem"} weight={"700"} onClick={handleSubmitButtonClick}>회원가입</C.StButton>
-                    <StyledLink to={`/`} color="#00ADB5">
+                    <C.StButton $size={"1.25rem"} $weight={"700"} onClick={handleSubmitButtonClick}>회원가입</C.StButton>
+                    <StyledLink to={`/`} $color="#00ADB5">
                         로그인하기
                     </StyledLink>
                 </C.StLoginForm>

@@ -8,12 +8,12 @@ const StyledLink = styled(Link)`
     text-align: center;
     text-decoration: none;
 
-    font-size: ${({size}) => size || "0.875rem"};
-    font-weight: ${({weight}) => weight || "500"};
-	color: ${({ color }) => color || "black"};
+    font-size: ${({ $size }) => $size || "0.875rem"};
+    font-weight: ${({ $weight }) => $weight || "500"};
+	color: ${({ $color }) => $color || "black"};
 
     &:hover, &:focus, &:active, &:visited {
-        color: ${({ color }) => color || "black"};
+        color: ${({ $color }) => $color || "black"};
     }
 `
 

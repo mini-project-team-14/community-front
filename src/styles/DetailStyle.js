@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import { ReactComponent as Heart } from "../assets/images/icon/heart1.svg";
 
 export const StDetailContentSection = styled.div`
     display: flex;
@@ -27,7 +28,7 @@ export const StDetail = styled.div`
 
     box-sizing: border-box;
     padding: 10px;
-    padding-bottom: ${({bottom}) => bottom};
+    padding-bottom: ${({ $bottom }) => $bottom};
 `
 
 export const StDetailTitleItemArea = styled.div`
@@ -39,6 +40,8 @@ export const StDetailTitleItemArea = styled.div`
 
 export const StDetailTitleItemTop = styled.div`
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 1.25rem;
     font-weight: 700;
 `
@@ -80,19 +83,21 @@ export const StCommentList = styled.ul`
     justify-content: space-between;
 
     width: inherit;
+    height: auto;
 
     background-color: white;
+    border-radius: 10px;
+    
+    box-sizing: border-box;
     padding: 5px 10px;
     margin: 0px;
-
-    box-sizing: border-box;
+    
     list-style: none;
-
-    border-radius: 10px;
 `
 
 export const StCommentListItem = styled.li`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
 
@@ -100,19 +105,27 @@ export const StCommentListItem = styled.li`
     height: auto;
     min-height: 30px;
 
+    border-bottom: 2px solid ${({ $border }) => $border || "transparent"};
+    
+    box-sizing: border-box;
+    padding: 5px;
     margin: 0;
-    padding: 0;
 
-    border-top: 2px solid ${({ border }) => border || "transparent"};
-
-    gap: 10px;
+    &:last-child {
+        border-bottom: transparent;
+    }
 `
 
 export const StCommentListItemBlock = styled.div`
-    width: ${({ width }) => width};    
-    min-width: ${({ min }) => min};
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    text-align: ${({ align }) => align || "center"};
+    width: ${({ $width }) => $width};
+    min-width: ${({ $min }) => $min};
+
+    text-align: ${({ $align }) => $align || "center"};
+    gap: 10px;
 `
 
 export const StCommentForm = styled.form`
@@ -125,4 +138,42 @@ export const StCommentForm = styled.form`
     border-radius: 10px;
 
     gap: 10px;
+`
+
+export const StFavorite = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    height: 50px;
+    
+    font-size: 1.5rem;
+    font-weight: 500;
+
+    gap: 10px;
+`
+
+export const StCommentListSide = styled.div`    
+    display: flex;
+    align-items: center;
+    
+    gap: 10px;
+`
+
+export const FavoriteBtn = styled.div`
+    width: inherit;
+    height: inherit;
+
+    padding: 0;
+    margin: 0;
+    
+    cursor: pointer;
+`
+
+export const Favorite = styled(Heart)`
+    path {
+        stroke: ${({ $clicked }) => $clicked ? "red" : "black"};
+        fill: ${({ $clicked }) => $clicked ? "red" : "transparent"};
+        transition: fill 0.5s, stroke 0.5s;
+    }
 `

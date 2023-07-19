@@ -1,32 +1,82 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import Thumbup from '../../assets/images/icon/thumbup.png'
+import Delete from '../../assets/images/icon/delete.png'
+import Edit from '../../assets/images/icon/edit.png'
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as C from '../../styles/CommonStyle';
 import * as D from '../../styles/DetailStyle';
-import { getPosts, deletePost, updatePost } from '../../api/posts';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import jwt_decode from 'jwt-decode';
+import { useCategoryContext } from '../../assets/context/CategoryContext';
 
-function EditorForm() {
-    const { name, id } = useParams();
+function DetailLayout() {
+    const [cookies, ,] = useCookies(['login']);
+    const { path, id } = useParams();
+    const category = useCategoryContext();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [clicked, setClicked] = useState(false);
+    const [boardId, setBoardId] = useState(null);
+    const [comment, setComment] = useState("");
+    const { aud } = jwt_decode(cookies.login);
+
+    useEffect(() => {
+        setBoardId(category.find(category => category.path === path).boardId);
+    }, [path]);
+    // console.log("detail", boardId);
+
+    const { data, isLoading, isError } = useQuery(["posts", boardId],
+        async () => {
+            console.log("detail", boardId);
+            const response = await axios.get(
+                `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
+                {
+                    headers: { Authorization: cookies.login }
+                }
+            )
+            // console.log(response)
+            // console.log(response.data.likesList.includes(aud))
+            setClicked(response.data.likesList.includes(aud))
+            return response.data;
+        },
+        {
+            initialData: () => {
+                return queryClient.getQueryData(["posts", id]);
+            }
+        }
+    );
+
+    // 삭제
+    const deletePost = async (id) => {
+        await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
+            {
+                headers: { Authorization: cookies.login }
+            }
+        );
+    }
 
     const deleteMutation = useMutation(deletePost, {
         onSuccess: () => {
-            queryClient.invalidateQueries("posts");
+            queryClient.invalidateQueries(["boards"]);
         }
     })
 
-    // 컴포넌트 내부에서 사용할 state 1개 (내용) 정의
-    const [comment, setComment] = useState("");
-    const { isLoading, isError, data } = useQuery("posts", getPosts);
+    // 좋아요
+    const likePost = async () => {
+        await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/1/posts/${id}/like`, null,
+            {
+                headers: { Authorization: cookies.login }
+            }
+        )
+    }
 
-    if (isLoading) {
-        return <h1>로딩중</h1>
-    }
-    if (isError) {
-        return <h1>오류발생</h1>
-    }
+    const toggleMutation = useMutation(likePost, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["posts"]);
+        }
+    })
 
     // 에러 메시지 발생 함수
     const getErrorMsg = (errorCode, params) => {
@@ -45,158 +95,164 @@ function EditorForm() {
         setComment(event.target.value)
     };
 
-    // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
+    // handleCommentSubmit // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
     const handleSubmitButtonClick = (event) => {
-        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역함
+        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역할
         event.preventDefault();
 
-        // 아이디, 비밀번호, 이름이 모두 존재해야만 정상처리(하나라도 없는 경우 오류 발생)
+        // 댓글이 존재해야만 정상처리
         // "01" : 필수 입력값 검증 실패 안내
         if (!comment) {
             return getErrorMsg("01", { comment });
         }
 
-        // 추가하려는 user를 newUser라는 객체로 새로 만듦
         const newComment = {
-            comment,
-            username: "김OO",
-            createdAt: "2023-07-17"
-        };
-
-        // mutate
-        // mutation.mutate(newComment);
-        // state 초기화
-        setComment("");
-        alert("작성 성공");
-    };
-
-    let target = data.filter((item) => {
-        return item.id === id
-    })
-    let comments = target[0].comments;
-
-    // handleCommentSubmit
-    const handleSubmitButtonClick2 = (event) => {
-        event.preventDefault();
-
-        if (!comment) {
-            return getErrorMsg("01", { comment });
+            comment
         }
 
-        const newComment =
-            [
-                ...comments,
-                {
-                    id,
-                    comment,
-                    username: "김OO",
-                    createdAt: "2023-07-17"
-                }
-            ];
-
-        axios.patch(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`, { comments: newComment });
+        axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments`, newComment,
+            {
+                headers: { Authorization: cookies.login }
+            }
+        )
         setComment("");
         alert("작성 성공");
     }
 
-    // handleDeletePost
+    const handleUpdateButtonClick = () => {
+        navigate(`/board/${path}/editor/${id}`);
+    };
+
     const handleDeleteButtonClick = () => {
         deleteMutation.mutate(id);
-        navigate("/board");
+        alert("삭제 완료");
+        navigate(-1);
     };
+
+    const handleToggleButtonClick = () => {
+        setClicked(!clicked);
+
+        toggleMutation.mutate();
+
+        return clicked
+    }
+
+    if (isLoading) {
+        return <div>로딩중...</div>; // or you can render a loading spinner
+    }
+
+    if (isError) {
+        return <div>에러 발생</div>; // or you can render an error message
+    }
 
     return (
         <C.StMainSection>
-            {
-                data.filter((item) => {
-                    return item.id === id;
-                }).map((item) => {
-                    return (
-                        <>
-                            <D.StDetailContentSection key={item.id}>
-                                <D.StDetail bottom={"5px"}>
-                                    <D.StDetailTitleItemArea>
-                                        <D.StDetailTitleItemTop>
-                                            {item.title}
-                                        </D.StDetailTitleItemTop>
-                                        <D.StDetailTitleItemBottom>
-                                            <div>
-                                                {item.username} | {item.createdAt}
-                                            </div>
-                                            <div>
-                                                좋아요 수 {item.countLikes.length}
-                                            </div>
-                                        </D.StDetailTitleItemBottom>
-                                    </D.StDetailTitleItemArea>
-                                </D.StDetail>
-                                <D.StDetail height={"300px"}>
-                                    {item.content}
-                                </D.StDetail>
-                                <D.StDetailButtonArea>
-                                    <D.StDetailButtonAreaChild>
-                                        <C.StButton width={"50px"} height={"30px"} color={"gray"} hovercolor={"black"}>
-                                            이전
-                                        </C.StButton>
-                                        <C.StButton width={"50px"} height={"30px"} color={"gray"} hovercolor={"black"}>
-                                            목록
-                                        </C.StButton>
-                                        <C.StButton width={"50px"} height={"30px"} color={"gray"} hovercolor={"black"}>
-                                            다음
-                                        </C.StButton>
-                                    </D.StDetailButtonAreaChild>
-                                    <D.StDetailButtonAreaChild>
-                                        <C.StButton width={"50px"} height={"30px"} onClick={() => navigate(`./editor`)}>
-                                            수정
-                                        </C.StButton>
-                                        <C.StButton width={"50px"} height={"30px"} color={"gray"} hovercolor={"black"} onClick={handleDeleteButtonClick}>
-                                            삭제
-                                        </C.StButton>
-                                    </D.StDetailButtonAreaChild>
-                                </D.StDetailButtonArea>
-                            </D.StDetailContentSection>
-                            <D.StDetailCommentSection>
-                                댓글 {item.comments.length}, 좋아요 {item.countLikes.length}
-                                <D.StCommentList>
-                                    <D.StCommentListItem>
-                                        <D.StCommentListItemBlock width={"70px"} min={"70px"}>
-                                            작성자
-                                        </D.StCommentListItemBlock>
-                                        <D.StCommentListItemBlock width={"90%"} align={"left"}>
-                                            내용
-                                        </D.StCommentListItemBlock>
-                                        <D.StCommentListItemBlock width={"100px"} min={"100px"}>
-                                            작성일자
-                                        </D.StCommentListItemBlock>
-                                    </D.StCommentListItem>
-                                    {
-                                        item.comments.map((comment) => {
-                                            return (
-                                                <D.StCommentListItem border={"#d4d4d4"}>
-                                                    <D.StCommentListItemBlock width={"70px"} min={"70px"}>
-                                                        {comment.username}
-                                                    </D.StCommentListItemBlock>
-                                                    <D.StCommentListItemBlock width={"90%"} align={"left"}>
-                                                        {comment.comment}
-                                                    </D.StCommentListItemBlock>
-                                                    <D.StCommentListItemBlock width={"100px"} min={"100px"}>
-                                                        {comment.createdAt}
-                                                    </D.StCommentListItemBlock>
-                                                </D.StCommentListItem>
-                                            )
-                                        })
-                                    }
-                                </D.StCommentList>
-                                <D.StCommentForm>
-                                    <C.StEditorInput width={"100%"} height={"40px"} size={"1.125rem"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
-                                    <C.StButton width={"70px"} height={"40px"} size={"1.125rem"} onClick={(event) => handleSubmitButtonClick2(event)}>작성</C.StButton>
-                                </D.StCommentForm>
-                            </D.StDetailCommentSection>
-                        </>
-                    )
-                })
-            }
+            <D.StDetailContentSection>
+                <D.StDetail $bottom={"5px"}>
+                    <D.StDetailTitleItemArea>
+                        <D.StDetailTitleItemTop>
+                            {data.title}
+                        </D.StDetailTitleItemTop>
+                        <D.StDetailTitleItemBottom>
+                            <D.StCommentListSide>
+                                <C.StSpan>
+                                    {data.nickname}
+                                </C.StSpan>
+                                <C.StSpan $color={"gray"} $size={"0.875rem"} $weight={"400"}>
+                                    {data.createdAt}
+                                </C.StSpan>
+                            </D.StCommentListSide>
+                            <D.StCommentListSide>
+                                <C.StSpan $color={"#00ADB5"}>
+                                    댓글 {data.comments?.length}
+                                </C.StSpan>
+                                <C.StSpan $color={"red"}>
+                                    좋아요 {data.likesList?.length}
+                                </C.StSpan>
+                            </D.StCommentListSide>
+                        </D.StDetailTitleItemBottom>
+                    </D.StDetailTitleItemArea>
+                </D.StDetail>
+                <D.StDetail height={"300px"}>
+                    {data.content}
+                </D.StDetail>
+                <D.StDetailButtonArea>
+                    <D.StDetailButtonAreaChild>
+                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"}>
+                            이전
+                        </C.StButton>
+                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} onClick={() => navigate(-1)} $hover={"black"}>
+                            목록
+                        </C.StButton>
+                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"}>
+                            다음
+                        </C.StButton>
+                    </D.StDetailButtonAreaChild>
+                    <D.StDetailButtonAreaChild>
+                        <C.StButton $width={"50px"} $height={"30px"} onClick={handleUpdateButtonClick}>
+                            수정
+                        </C.StButton>
+                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"} onClick={handleDeleteButtonClick}>
+                            삭제
+                        </C.StButton>
+                    </D.StDetailButtonAreaChild>
+                </D.StDetailButtonArea>
+            </D.StDetailContentSection>
+            <D.StFavorite>
+                <D.FavoriteBtn onClick={handleToggleButtonClick}>
+                    <D.Favorite $clicked={clicked} />
+                </D.FavoriteBtn>
+                {data.likesList?.length}
+            </D.StFavorite>
+            <D.StDetailCommentSection>
+                댓글 {data.comments.length}
+                <D.StCommentList>
+                    {data.comments?.length === 0 ? (
+                        <div>작성된 댓글이 없습니다.</div>
+                    ) : (
+                        data.comments?.map((comment) => {
+                            const isCurrrentUser = aud === comment.nickname;
+                            return (
+                                <D.StCommentListItem key={comment.commentId} $border={"#d4d4d4"}>
+                                    <D.StCommentListItemBlock $width={"100%"} $min={"70px"} $weight={"700"}>
+                                        <D.StCommentListSide>
+                                            <C.StSpan $color={"#00ADB5"} $weight={"500"}>
+                                                {comment.nickname}
+                                            </C.StSpan>
+                                            <C.StSpan $color={"gray"} $size={"0.875rem"}>
+                                                {comment.createdAt}
+                                            </C.StSpan>
+                                            {isCurrrentUser && (
+                                                <>
+                                                    <img alt="edit" src={Edit} style={{ height: "1.25rem" }} />
+                                                    <img alt="delete" src={Delete} style={{ height: "1.25rem" }} />
+                                                </>
+                                            )}
+                                        </D.StCommentListSide>
+                                        <D.StCommentListSide>
+                                            <img alt="thumbup" src={Thumbup} style={{ height: "1.25rem" }} />
+                                            <C.StSpan $color={"gray"} $size={"0.875rem"}>
+                                                0
+                                            </C.StSpan>
+                                        </D.StCommentListSide>
+                                    </D.StCommentListItemBlock>
+                                    <D.StCommentListItemBlock $width={"100%"} $align={"left"} $weight={"400"}>
+                                        <C.StSpan>
+                                            {comment.comment}
+                                        </C.StSpan>
+                                    </D.StCommentListItemBlock>
+                                </D.StCommentListItem>
+                            )
+                        })
+                    )}
+                </D.StCommentList>
+                <D.StCommentForm>
+                    <C.StEditorInput $width={"100%"} $height={"40px"} size={"1.125rem"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
+                    <C.StButton $width={"70px"} $height={"40px"} size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>작성</C.StButton>
+                </D.StCommentForm>
+            </D.StDetailCommentSection>
         </C.StMainSection>
     )
 }
 
-export default EditorForm
+export default DetailLayout

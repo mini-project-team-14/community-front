@@ -1,70 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import React, { useContext, useEffect, useState } from 'react'
+import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { v4 as uuidv4 } from "uuid"
-import { addPost, getPosts, updatePost } from '../../api/posts';
 import * as C from '../../styles/CommonStyle';
 import * as E from '../../styles/EditorStyle';
 import axios from 'axios';
-
-const category = [
-    {
-        boardId: 1,
-        name: "free"
-    },
-    {
-        boardId: 2,
-        name: "spring"
-    },
-    {
-        boardId: 3,
-        name: "react"
-    },
-    {
-        boardId: 4,
-        name: "team"
-    }
-]
+import { useCookies } from 'react-cookie';
+import { useCategoryContext } from '../../assets/context/CategoryContext';
 
 function EditorForm() {
     const queryClient = useQueryClient();
-    const { name, id } = useParams();
+    const { path, id } = useParams();
     const navigate = useNavigate();
-    const { data } = useQuery("posts", getPosts)
-    const mutation = useMutation(addPost, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("posts");
-        }
-    })
     const [boardId, setBoardId] = useState();
-
-    useEffect(() => {
-        if (name) {
-            const temp = category.filter((board) => {
-                return board.name === name;
-            });
-            setBoardId(temp[0].boardId || 1);
-        } else {
-            // alert("잘못된 경로로 접근했습니다.");
-            setBoardId(1);
-            navigate("/board/free");
-        }
-    }, [name]);
-
-    // console.log(thisData);
-    // 컴포넌트 내부에서 사용할 state 2개(제목, 내용) 정의
+    const [cookies, ,] = useCookies(['login']);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const category = useCategoryContext();
+    const isEdit = !!id;
 
     useEffect(() => {
-        if (id) {
-            let target = data.filter((item) => {
-                return item.id === id
-            })
-            setTitle(target[0].title);
-            setContent(target[0].content);
-        }
-    }, [])
+        setBoardId(category.find(category => category.path === path).boardId);
+    }, [path]);
+    
+    console.log("editor", boardId);
+
+    // const { data, isLoading, isError } = useQuery(
+    //     ["posts", id],
+    //     {
+    //         queryFn: async () => {
+    //             const response = await axios.get(
+    //                 `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
+    //                 {
+    //                     headers: { Authorization: cookies.login }
+    //                 }
+    //             )
+    //             setTitle(response.data.title);
+    //             setContent(response.data.content);
+    //             return response.data;
+    //         },
+    //         enabled: isEdit,
+    //     }
+    // );
 
     // 에러 메시지 발생 함수
     const getErrorMsg = (errorCode, params) => {
@@ -87,8 +63,39 @@ function EditorForm() {
         }
     };
 
+    const addPost = async (newPost) => {
+        try {
+            await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts`, newPost,
+                {
+                    headers: { Authorization: cookies.login }
+                }
+            );
+            alert("작성 성공!");
+            navigate(-1);
+        } catch (error) {
+            console.log(error.response);
+            alert("작성 실패!");
+        }
+    }
+
+    // const updatePostData = async (updatePost) => {
+    //     try {
+    //         axios.put(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`, updatePost,
+    //             {
+    //                 headers: { Authorization: cookies.login }
+    //             }
+    //         )
+    //         alert("수정 성공!");
+    //         queryClient.invalidateQueries(["posts", id]);
+    //         navigate(-1);
+    //     } catch (error) {
+    //         console.log(error.response);
+    //         alert("수정 실패!");
+    //     }
+    // }
+
     // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
-    const handleSubmitButtonClick = (event) => {
+    const handleButtonClick = (event) => {
         // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역함
         event.preventDefault();
 
@@ -98,93 +105,44 @@ function EditorForm() {
             return getErrorMsg("01", { title, content });
         }
 
-        // 추가하려는 user를 newUser라는 객체로 새로 만듦
-        const newPost = {
-            boardId,
-            id: uuidv4(),
-            title,
-            content,
-            nickname: "김OO",
-            createdAt: "2023-07-17",
-            modifiedAt: "",
-            comments: [],
-            countLikes: []
-        };
-
-        // mutate
-        mutation.mutate(newPost);
-        // state 초기화
-        setTitle("");
-        setContent("");
-        alert("작성 성공");
-        navigate(-1);
-    };
-
-    const handleUpdateButtonClick = (event) => {
-        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역함
-        event.preventDefault();
-
-        // 아이디, 비밀번호, 이름이 모두 존재해야만 정상처리(하나라도 없는 경우 오류 발생)
-        // "01" : 필수 입력값 검증 실패 안내
-        if (!title || !content) {
-            return getErrorMsg("01", { title, content });
-        }
-
-        // 수정하려는 내용을 담은 updatePost를 객체로 새로 만듦
-        const updatePost = {
+        const post = {
             title,
             content
-        }
-        axios.patch(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`, updatePost)
+        };
 
-        // mutate
-        // updateMutation.mutate({id});
+        if (isEdit) {
+            // updatePostData(post); // 수정 모드일 경우 수정 API 호출
+        } else {
+            addPost(post); // 작성 모드일 경우 작성 API 호출
+        }
+
         // state 초기화
         setTitle("");
         setContent("");
-        alert("수정 성공");
-        navigate(-1);
     };
 
     const handleCancelButtonClick = (event) => {
-        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역함
+        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역할
         event.preventDefault();
 
         // 이전 화면으로 이동
         navigate(-1);
     };
 
-    if (id) {
-        return (
-            <C.StMainSection>
-                <E.StEditorForm>
-                    <E.StEditorInputSection>
-                        <C.StEditorInput type="text" name="title" value={title} placeholder="제목" onChange={onChangeHandler} />
-                        <C.StEditorTextarea type="text" name="content" value={content} placeholder="내용" onChange={onChangeHandler} />
-                    </E.StEditorInputSection>
-                    <E.StEditorButtonSection>
-                        <C.StButton width={"70px"} height={"40px"} size={"1.125rem"} color={"gray"} hovercolor={"black"} onClick={handleCancelButtonClick}>취소</C.StButton>
-                        <C.StButton width={"70px"} height={"40px"} size={"1.125rem"} onClick={handleUpdateButtonClick}>수정</C.StButton>
-                    </E.StEditorButtonSection>
-                </E.StEditorForm>
-            </C.StMainSection>
-        )
-    } else {
-        return (
-            <C.StMainSection>
-                <E.StEditorForm>
-                    <E.StEditorInputSection>
-                        <C.StEditorInput type="text" name="title" value={title} placeholder="제목" onChange={onChangeHandler} />
-                        <C.StEditorTextarea type="text" name="content" value={content} placeholder="내용" onChange={onChangeHandler} />
-                    </E.StEditorInputSection>
-                    <E.StEditorButtonSection>
-                        <C.StButton width={"70px"} height={"40px"} size={"1.125rem"} color={"gray"} hovercolor={"black"} onClick={handleCancelButtonClick}>취소</C.StButton>
-                        <C.StButton width={"70px"} height={"40px"} size={"1.125rem"} onClick={handleSubmitButtonClick}>작성</C.StButton>
-                    </E.StEditorButtonSection>
-                </E.StEditorForm>
-            </C.StMainSection>
-        )
-    }
+    return (
+        <C.StMainSection>
+            <E.StEditorForm>
+                <E.StEditorInputSection>
+                    <C.StEditorInput type="text" name="title" value={title} placeholder="제목" onChange={onChangeHandler} />
+                    <C.StEditorTextarea type="text" name="content" value={content} placeholder="내용" onChange={onChangeHandler} />
+                </E.StEditorInputSection>
+                <E.StEditorButtonSection>
+                    <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} $color={"gray"} $hover={"black"} onClick={handleCancelButtonClick}>취소</C.StButton>
+                    <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={handleButtonClick}>{isEdit ? "수정" : "작성"}</C.StButton>
+                </E.StEditorButtonSection>
+            </E.StEditorForm>
+        </C.StMainSection>
+    )
 }
 
 export default EditorForm
