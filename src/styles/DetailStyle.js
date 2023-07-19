@@ -1,5 +1,8 @@
 import { styled } from "styled-components";
-import { ReactComponent as Heart } from "../assets/images/icon/heart1.svg";
+import { ReactComponent as Heart } from "../assets/images/icon/heart.svg";
+import { ReactComponent as Edit } from "../assets/images/icon/edit.svg";
+import { ReactComponent as ThumbUp } from "../assets/images/icon/thumbUp.svg";
+import { ReactComponent as Delete } from "../assets/images/icon/delete.svg";
 
 export const StDetailContentSection = styled.div`
     display: flex;
@@ -27,8 +30,8 @@ export const StDetail = styled.div`
     gap: 10px;
 
     box-sizing: border-box;
-    padding: 10px;
-    padding-bottom: ${({ $bottom }) => $bottom};
+    padding: 5px 10px;
+    cursor: ${({ $cursor }) => $cursor ? "pointer" : ""};
 `
 
 export const StDetailTitleItemArea = styled.div`
@@ -160,7 +163,10 @@ export const StCommentListSide = styled.div`
     gap: 10px;
 `
 
-export const FavoriteBtn = styled.div`
+export const StSvgBtn = styled.div`
+    display: flex;
+    align-items: center;
+    
     width: inherit;
     height: inherit;
 
@@ -172,8 +178,35 @@ export const FavoriteBtn = styled.div`
 
 export const Favorite = styled(Heart)`
     path {
-        stroke: ${({ $clicked }) => $clicked ? "red" : "black"};
-        fill: ${({ $clicked }) => $clicked ? "red" : "transparent"};
+        stroke: ${({ $heartToggle }) => $heartToggle ? "red" : "black"};
+        fill: ${({ $heartToggle }) => $heartToggle ? "red" : "transparent"};
+        transition: fill 0.5s, stroke 0.5s;
+    }
+`
+
+export const StCustomImg = styled.img`
+    cursor: pointer;
+`
+
+export const StEditSvg = styled(Edit)`
+    path {
+        stroke: ${({ $editToggle }) => $editToggle ? "red" : "black"};
+        fill: ${({ $editToggle }) => $editToggle ? "red" : "black"};
+        transition: fill 0.5s, stroke 0.5s;
+    }
+`
+
+export const StDeleteSvg = styled(Delete)`
+    path {
+        stroke: black;
+        fill: black;
+    }
+`
+
+export const StThumbUpSvg = styled(ThumbUp)`
+    path {
+        stroke: ${({ $thumbUpToggle }) => $thumbUpToggle ? "blue" : "gray"};
+        fill: ${({ $thumbUpToggle }) => $thumbUpToggle ? "blue" : "gray"};
         transition: fill 0.5s, stroke 0.5s;
     }
 `

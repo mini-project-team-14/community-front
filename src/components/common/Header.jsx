@@ -24,8 +24,14 @@ function Header() {
         navigate("/")
     }
 
-    const { aud } = jwt_decode(cookies.accessToken);
-    console.log(aud);
+    try {
+        const { aud } = jwt_decode(cookies.accessToken);
+        console.log(aud);
+    } catch (error) {
+        // 예외가 발생한 경우 처리할 코드 작성
+        console.error("Invalid token specified:", error.message);
+        // 또는 원하는 대체 처리를 수행할 수 있습니다.
+    }
 
     return (
         <StHeaderContainer>
@@ -43,8 +49,8 @@ function Header() {
                         </StSpan>
                     ) : (
                         <>
-                            <StSpan $color={"#00ADB5"}>
-                                {aud}
+                            <StSpan $color={"#00ADB5"} $weight={"700"}>
+                                {/* {aud} */}
                             </StSpan>
                             <StSpan>
                                 님 환영합니다
@@ -55,7 +61,6 @@ function Header() {
                         </>
                     )
                 }
-
             </StHeaderRight>
         </StHeaderContainer>
     )
