@@ -2,7 +2,7 @@ import * as C from '../../styles/CommonStyle'
 import Logo from '../../assets/images/logo500.png'
 import RtanWelcome from '../../assets/images/rtan-welcome.png'
 import StyledLink from '../../styles/LinkStyle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [, setCookie,] = useCookies(['login']);
+    const [cookies, setCookie, removeCookie] = useCookies(['login']);
     // const [setCookie] = useCookies(['login']);
     // const { data } = useQuery("users", getUsers);
 

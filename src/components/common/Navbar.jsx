@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCategoryContext } from '../../assets/context/CategoryContext.js';
 import { styled } from 'styled-components';
+import { StButton } from '../../styles/CommonStyle.js';
 
 function Navbar() {
     const { path } = useParams();
@@ -10,16 +11,22 @@ function Navbar() {
 
     return (
         <StNavbarWrapper>
+
             <StNavbar>
-                {
-                    category.map(item => {
-                        return (
-                            <StNavList key={item.boardId} $border={item.path === path} onClick={() => navigate(`/board/${item.path}`)}>
-                                <span>{item.name}</span>
-                            </StNavList>
-                        )
-                    })
-                }
+                <StNavbarSide>
+                    {
+                        category.map(item => {
+                            return (
+                                <StNavList key={item.boardId} $border={item.path === path} onClick={() => navigate(`/board/${item.path}`)}>
+                                    <span>{item.name}</span>
+                                </StNavList>
+                            )
+                        })
+                    }
+                </StNavbarSide>
+                <StNavbarSide>
+                    <StButton $width={"70px"} $height={"40px"} $size={"1.25rem"} onClick={() => navigate(`./board/${path}/editor`)}>작성</StButton>
+                </StNavbarSide>
             </StNavbar>
         </StNavbarWrapper>
     )
@@ -28,26 +35,38 @@ function Navbar() {
 export default Navbar
 
 const StNavbarWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
     width: inherit;
 `
 
 const StNavbar = styled.div`
     display: flex;
     align-items: center;
-    
+    justify-content: space-between;
+    width: 100%;
     height: 56px;
     background-color: #393e46;
 
     border: 3px solid transparent;
     border-radius: 10px;
     /* border-bottom: 3px solid gray; */
-    color: black;
-    font-size: 1.5rem;
-    font-weight: 500;
 
     box-sizing: border-box;
     margin: 0 20px;
     padding: 0 20px;
+`
+
+const StNavbarSide = styled.div`
+    display: flex;
+    align-items: center;
+    
+    height: 56px;
+
+    font-size: 1.5rem;
+    font-weight: 500;
+
+    box-sizing: border-box;
     gap: 20px;
 `
 

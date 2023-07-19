@@ -18,6 +18,7 @@ function DetailLayout() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [clicked, setClicked] = useState(false);
+    const [commentToggle, setCommentToggle] = useState(false);
     const [boardId, setBoardId] = useState(null);
     const [comment, setComment] = useState("");
     const { aud } = jwt_decode(cookies.login);
@@ -29,7 +30,7 @@ function DetailLayout() {
 
     const { data, isLoading, isError } = useQuery(["posts", boardId],
         async () => {
-            console.log("detail", boardId);
+            // console.log("detail", boardId);
             const response = await axios.get(
                 `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
                 {
@@ -137,12 +138,16 @@ function DetailLayout() {
         return clicked
     }
 
+    const handleCommentToggleButtonClick = () => {
+        setCommentToggle(!commentToggle);
+    }
+
     if (isLoading) {
-        return <div>로딩중...</div>; // or you can render a loading spinner
+        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩중</C.StSpan>; // or you can render a loading spinner
     }
 
     if (isError) {
-        return <div>에러 발생</div>; // or you can render an error message
+        return <C.StSpan $size={"2rem"} $weight={"700"} $color={"red"} $left={"20px"} >오류 발생</C.StSpan>; // or you can render an error message
     }
 
     return (
@@ -178,14 +183,8 @@ function DetailLayout() {
                 </D.StDetail>
                 <D.StDetailButtonArea>
                     <D.StDetailButtonAreaChild>
-                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"}>
-                            이전
-                        </C.StButton>
                         <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} onClick={() => navigate(-1)} $hover={"black"}>
                             목록
-                        </C.StButton>
-                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"}>
-                            다음
                         </C.StButton>
                     </D.StDetailButtonAreaChild>
                     <D.StDetailButtonAreaChild>
@@ -205,13 +204,15 @@ function DetailLayout() {
                 {data.likesList?.length}
             </D.StFavorite>
             <D.StDetailCommentSection>
-                댓글 {data.comments.length}
+                <C.StSpan $weight={"500"}>
+                    댓글 {data.comments.length}
+                </C.StSpan>
                 <D.StCommentList>
                     {data.comments?.length === 0 ? (
                         <div>작성된 댓글이 없습니다.</div>
                     ) : (
                         data.comments?.map((comment) => {
-                            const isCurrrentUser = aud === comment.nickname;
+                            const isCurrentUser = aud === comment.nickname;
                             return (
                                 <D.StCommentListItem key={comment.commentId} $border={"#d4d4d4"}>
                                     <D.StCommentListItemBlock $width={"100%"} $min={"70px"} $weight={"700"}>
@@ -222,9 +223,9 @@ function DetailLayout() {
                                             <C.StSpan $color={"gray"} $size={"0.875rem"}>
                                                 {comment.createdAt}
                                             </C.StSpan>
-                                            {isCurrrentUser && (
+                                            {isCurrentUser && (
                                                 <>
-                                                    <img alt="edit" src={Edit} style={{ height: "1.25rem" }} />
+                                                    <img alt="edit" src={Edit} onClick={() => handleCommentToggleButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
                                                     <img alt="delete" src={Delete} style={{ height: "1.25rem" }} />
                                                 </>
                                             )}
@@ -247,11 +248,17 @@ function DetailLayout() {
                     )}
                 </D.StCommentList>
                 <D.StCommentForm>
-                    <C.StEditorInput $width={"100%"} $height={"40px"} size={"1.125rem"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
-                    <C.StButton $width={"70px"} $height={"40px"} size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>작성</C.StButton>
+                    <C.StEditorInput $width={"100%"} $height={"40px"} $size={"1.125rem"} $weight={"500"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
+                    {
+                        commentToggle && (
+                            <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>작성</C.StButton>
+                        ) || (
+                            <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>수정</C.StButton>
+                        )
+                    }
                 </D.StCommentForm>
             </D.StDetailCommentSection>
-        </C.StMainSection>
+        </C.StMainSection >
     )
 }
 

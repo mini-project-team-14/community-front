@@ -6,6 +6,7 @@ import { styled } from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import jwt_decode from "jwt-decode"
+import { StSpan } from '../../styles/CommonStyle'
 
 function Header() {
     const navigate = useNavigate();
@@ -14,16 +15,9 @@ function Header() {
         alert("로그아웃!")
         removeCookie('login');
         navigate("/")
-
     }
-    // const token = localStorage.getItem('login'); // 로컬
-    // const { sub } = jwt_decode(token);
-    // console.log(sub);
 
-    const token = jwt_decode(cookies.login); // 쿠키
-    // console.log(token);
-    const { sub, aud } = jwt_decode(cookies.login); // 쿠키
-    // console.log(sub, aud);
+    const { aud } = jwt_decode(cookies.login);
 
     return (
         <StHeaderContainer>
@@ -34,10 +28,26 @@ function Header() {
                 </Link>
             </StHeaderLeft>
             <StHeaderRight>
-                <div>환영합니다, {aud}님! </div>
-                {/* <Link to="/"> */}
-                <img alt="logout" onClick={handleLogoutButtonClick} src={Logout} style={{ height: "36px", cursor: "pointer" }} />
-                {/* </Link> */}
+                {
+                    (Boolean(cookies.login) === false) ? (
+                        <StSpan $color={"red"} $weight={"700"}>
+                            잘못된 접근입니다.
+                        </StSpan>
+                    ) : (
+                        <>
+                            <StSpan $color={"#00ADB5"}>
+                                {aud}
+                            </StSpan>
+                            <StSpan>
+                                님 환영합니다
+                            </StSpan>
+                            {/* <Link to="/"> */}
+                            <img alt="logout" onClick={handleLogoutButtonClick} src={Logout} style={{ height: "36px", cursor: "pointer" }} />
+                            {/* </Link> */}
+                        </>
+                    )
+                }
+
             </StHeaderRight>
         </StHeaderContainer>
     )
@@ -70,5 +80,5 @@ const StHeaderRight = styled.div`
 
     font-size: 1.5rem;
 
-    gap: 10px;
+    gap: 6px;
 `
