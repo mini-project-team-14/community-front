@@ -19,7 +19,7 @@ function SignupForm() {
             console.log("성공하였습니다.");
         }
     })
-    const { data } = useQuery("users", getUsers);
+    // const { data } = useQuery("users", getUsers);
     const navigate = useNavigate();
 
     // 컴포넌트 내부에서 사용할 state 3개(아이디, 비밀번호, 이름) 정의
@@ -66,14 +66,14 @@ function SignupForm() {
         }
 
         // 이미 존재하는 아이디면 오류
-        const validationArr = data.filter(
-            (item) => item.username === username
-        );
+        // const validationArr = data.filter(
+        //     (item) => item.username === username
+        // );
 
-        // "02" : 아이디 중복 안내
-        if (validationArr.length > 0) {
-            return getErrorMsg("02", { username });
-        }
+        // // "02" : 아이디 중복 안내
+        // if (validationArr.length > 0) {
+        //     return getErrorMsg("02", { username });
+        // }
 
         // 추가하려는 user를 newUser라는 객체로 새로 만듦
         const newUser = {

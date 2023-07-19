@@ -30,7 +30,13 @@ function BoardLayout() {
           const response = await axios.get(
             `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}`,
             {
-              headers: { Authorization: cookies.login }
+              // headers: { Authorization: cookies.login }
+              headers: { 
+                Authorization: `Bearer ${cookies.accessToken}`,
+                RefreshToken: `Bearer ${cookies.refreshToken}`
+              }
+              // Accesstoken: cookies.accessToken,
+              // Refreshtoken: cookies.refreshToken
             }
           )
           // console.log(response);
@@ -52,8 +58,7 @@ function BoardLayout() {
   }
 
   return (
-    <C.StMainSection>
-      
+    <C.StMainSection>      
       <D.StDetailContentSection $gap={"10px"}>
       {
         data.length === 0 ? (

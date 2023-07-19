@@ -8,16 +8,24 @@ import { useCookies } from 'react-cookie'
 import jwt_decode from "jwt-decode"
 import { StSpan } from '../../styles/CommonStyle'
 
+// 쿠키(accessToken, refreshToken)를 만료시키는 함수
+function expireCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
 function Header() {
     const navigate = useNavigate();
-    const [cookies, , removeCookie] = useCookies(['login'])
+    const [cookies, , ] = useCookies(['accessToken', 'refreshToken'])
     const handleLogoutButtonClick = () => {
+        // removeCookie('login');
+        expireCookie('accessToken');
+        expireCookie('refreshToken');
         alert("로그아웃!")
-        removeCookie('login');
         navigate("/")
     }
 
-    const { aud } = jwt_decode(cookies.login);
+    const { aud } = jwt_decode(cookies.accessToken);
+    console.log(aud);
 
     return (
         <StHeaderContainer>
@@ -29,7 +37,7 @@ function Header() {
             </StHeaderLeft>
             <StHeaderRight>
                 {
-                    (Boolean(cookies.login) === false) ? (
+                    (Boolean(cookies.accessToken) === false) ? (
                         <StSpan $color={"red"} $weight={"700"}>
                             잘못된 접근입니다.
                         </StSpan>

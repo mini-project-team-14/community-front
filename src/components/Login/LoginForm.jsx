@@ -14,7 +14,7 @@ function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [cookies, setCookie, removeCookie] = useCookies(['login']);
+    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     // const [setCookie] = useCookies(['login']);
     // const { data } = useQuery("users", getUsers);
 
@@ -46,9 +46,16 @@ function LoginForm() {
     const loginUser = async (body) => {
         await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/user/login`, body)
             .then(response => {
-                const token = response.headers.authorization;
-                setCookie('login', token); // 쿠키
-                // localStorage.setItem('login', token); // 로컬
+                // accessToken, refreshToken 방식
+                // console.log(response.headers.accesstoken)
+                // console.log(response.headers.accesstoken.split(" ")[1]);
+                const accessToken = response.headers.accesstoken.split(" ")[1];
+                const refreshToken = response.headers.refreshtoken.split(" ")[1];
+
+                // 쿠키에 저장
+                setCookie('accessToken', accessToken);
+                setCookie('refreshToken', refreshToken);
+                
                 alert("로그인 성공!");
                 navigate(`/board/free`);
             }).catch(error => {
