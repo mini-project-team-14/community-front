@@ -29,7 +29,7 @@ export const StContentSection = styled.div`
     flex-direction: column;
     align-items: center;
 
-    gap: 30px;
+    gap: ${({ $gap }) => $gap || "30px"};
 `
 
 export const StP = styled.p`
@@ -38,12 +38,12 @@ export const StP = styled.p`
     font-weight: 700;
 `
 
-
 export const StSpan = styled.span`    
-    color: ${({ $color }) => $color};
-
     font-size: ${({ $size }) => $size};
     font-weight: ${({ $weight }) => $weight};
+    color: ${({ $color }) => $color};
+    
+    padding-left: ${({ $left }) => $left};
 `
 
 export const StLoginForm = styled.form`
@@ -94,7 +94,7 @@ export const StButton = styled.button`
     transition: all 0.5s;
 
     &:hover {
-        background-color: ${({$hover}) => $hover || "#0A8FCC"};
+        background-color: ${({ $hover }) => $hover || "#0A8FCC"};
     }
 `
 
@@ -105,8 +105,8 @@ export const StEditorInput = styled.input`
     border: 2px solid transparent;
     border-radius: 10px;
     
-    font-size: ${({ size }) => size || "1.25rem"};
-    font-weight: 700;
+    font-size: ${({ $size }) => $size || "1.25rem"};
+    font-weight: ${({ $weight }) => $weight || "700"};
 
     padding: 5px 10px;
     box-sizing: border-box;
@@ -142,14 +142,15 @@ export const StMainSection = styled.div`
     flex-direction: column;
 
     height: auto;
-    min-height: 400px;
-    background-color: #D4D4D4;
+    min-height: 300px;
+    background-color: ${({ $backColor }) => $backColor || "#D4D4D4"};
 
     border-radius: 10px;
+    border: ${({ $borderWidth }) => $borderWidth || "2px"} solid ${({ $border }) => $border || "transparent"};
 
     box-sizing: border-box;
-    padding: 20px;
+    padding: ${({ $padding }) => $padding || "18px"};
     margin: 20px;
 
-    gap: 20px;
+    gap: ${({ $gap }) => $gap || "20px"};
 `

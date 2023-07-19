@@ -21,8 +21,8 @@ function EditorForm() {
     useEffect(() => {
         setBoardId(category.find(category => category.path === path).boardId);
     }, [path]);
-    
-    console.log("editor", boardId);
+
+    // console.log("editor", boardId);
 
     // const { data, isLoading, isError } = useQuery(
     //     ["posts", id],
@@ -71,7 +71,7 @@ function EditorForm() {
                 }
             );
             alert("작성 성공!");
-            navigate(-1);
+            navigate(`/board/${path}`);
         } catch (error) {
             console.log(error.response);
             alert("작성 실패!");
@@ -115,10 +115,6 @@ function EditorForm() {
         } else {
             addPost(post); // 작성 모드일 경우 작성 API 호출
         }
-
-        // state 초기화
-        setTitle("");
-        setContent("");
     };
 
     const handleCancelButtonClick = (event) => {

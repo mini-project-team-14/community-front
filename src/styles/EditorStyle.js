@@ -6,7 +6,7 @@ export const StEditorForm = styled.form`
 
     width: inherit;
 
-    gap: 20px;
+    gap: 10px;
 `
 
 export const StEditorInputSection = styled.form`
@@ -15,7 +15,7 @@ export const StEditorInputSection = styled.form`
 
     width: inherit;
     
-    gap: 20px;
+    gap: 10px;
 `
 
 export const StEditorButtonSection = styled.form`
