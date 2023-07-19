@@ -30,7 +30,6 @@ function BoardLayout() {
           const response = await axios.get(
             `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}`,
             {
-              // headers: { Authorization: cookies.login }
               headers: { 
                 Authorization: `Bearer ${cookies.accessToken}`,
                 RefreshToken: `Bearer ${cookies.refreshToken}`
@@ -51,10 +50,10 @@ function BoardLayout() {
   );
 
   if (isLoading) {
-    return <h1>로딩중</h1>
+    return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩 중..</C.StSpan>
   }
   if (isError) {
-    return <h1>오류발생</h1>
+    return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"} $color={"red"}>오류 발생</C.StSpan>
   }
 
   return (
@@ -66,7 +65,7 @@ function BoardLayout() {
         ) : (
           data.map((item) => {
             return (
-              <D.StDetail key={item.postId} $bottom={"5px"} onClick={() => navigate(`./${item.postId}`)}>
+              <D.StDetail key={item.postId} $cursor={true}onClick={() => navigate(`./${item.postId}`)}>
                 <D.StDetailTitleItemArea>
                   <D.StDetailTitleItemTop>
                     {item.title}

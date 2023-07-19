@@ -44,6 +44,7 @@ export const StSpan = styled.span`
     color: ${({ $color }) => $color};
     
     padding-left: ${({ $left }) => $left};
+    transition: ${({ $trans }) => $trans ? "all 0.5s" : ""};
 `
 
 export const StLoginForm = styled.form`

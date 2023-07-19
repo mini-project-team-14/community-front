@@ -17,8 +17,10 @@ function DetailLayout() {
     const category = useCategoryContext();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [clicked, setClicked] = useState(false);
+    const [heartToggle, setHeartToggle] = useState(false);
     const [commentToggle, setCommentToggle] = useState(false);
+    const [thumbUpToggle, setThumbUpToggle] = useState(false);
+    const [commentId, setCommentId] = useState();
     const [boardId, setBoardId] = useState(null);
     const [comment, setComment] = useState("");
     const { aud } = jwt_decode(cookies.accessToken);
@@ -26,6 +28,7 @@ function DetailLayout() {
 
     useEffect(() => {
         setBoardId(category.find(category => category.path === path).boardId);
+        setCommentToggle(false);
     }, [path]);
     // console.log("detail", boardId);
 
@@ -43,7 +46,7 @@ function DetailLayout() {
             )
             // console.log(response)
             // console.log(response.data.likesList.includes(aud))
-            setClicked(response.data.likesList.includes(aud))
+            setHeartToggle(response.data.likesList.includes(aud))
             return response.data;
         },
         {
@@ -83,7 +86,25 @@ function DetailLayout() {
         )
     }
 
+    // 댓글 좋아요
+    const likeComment = async (commentId) => {
+        await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}/like`, null,
+            {
+                headers: {
+                    Authorization: `Bearer ${cookies.accessToken}`,
+                    RefreshToken: `Bearer ${cookies.refreshToken}`
+                }
+            }
+        )
+    }
+
     const toggleMutation = useMutation(likePost, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["posts"]);
+        }
+    })
+
+    const toggleCommentMutation = useMutation(likeComment, {
         onSuccess: () => {
             queryClient.invalidateQueries(["posts"]);
         }
@@ -106,7 +127,7 @@ function DetailLayout() {
         setComment(event.target.value)
     };
 
-    // handleCommentSubmit // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
+    // 댓글 작성, 수정
     const handleSubmitButtonClick = (event) => {
         // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역할
         event.preventDefault();
@@ -120,17 +141,29 @@ function DetailLayout() {
         const newComment = {
             comment
         }
-
-        axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments`, newComment,
-            {
-                headers: {
-                    Authorization: `Bearer ${cookies.accessToken}`,
-                    RefreshToken: `Bearer ${cookies.refreshToken}`
+        if (!commentToggle) {
+            axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments`, newComment,
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
                 }
-            }
-        )
+            )
+            alert("댓글 작성 성공");
+        } else {
+            axios.put(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}`, newComment,
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
+                }
+            )
+            setCommentToggle(false);
+            alert("댓글 수정 성공");
+        }
         setComment("");
-        alert("작성 성공");
     }
 
     const handleUpdateButtonClick = () => {
@@ -143,30 +176,60 @@ function DetailLayout() {
         navigate(-1);
     };
 
+    // 게시글 좋아요 토글
     const handleToggleButtonClick = () => {
-        setClicked(!clicked);
+        setHeartToggle(!heartToggle);
 
         toggleMutation.mutate();
 
-        return clicked
+        return heartToggle
     }
 
-    const handleCommentToggleButtonClick = () => {
+    // 댓글 수정 토글
+    const handleCommentToggleButtonClick = (commentId) => {
         setCommentToggle(!commentToggle);
+        const editComment = data.comments.find(comments => comments.commentId === commentId);
+        if (commentToggle) {
+            setCommentId();
+            setComment("");
+        } else {
+            setCommentId(editComment.commentId);
+            setComment(editComment.comment);
+        }
+    }
+
+    // 댓글 삭제
+    const handleCommentDeleteButtonClick = async (commentId) => {
+        await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${cookies.accessToken}`,
+                    RefreshToken: `Bearer ${cookies.refreshToken}`
+                }
+            }
+        )
+        alert("댓글 삭제 완료");
+    }
+
+    // 댓글 좋아요
+    const handleCommentLikeButtonClick = (commentId) => {
+        setThumbUpToggle(!thumbUpToggle);
+        toggleCommentMutation.mutate(commentId);
+
+        return thumbUpToggle;
     }
 
     if (isLoading) {
-        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩중</C.StSpan>; // or you can render a loading spinner
+        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩 중..</C.StSpan>; // or you can render a loading spinner
     }
-
     if (isError) {
-        return <C.StSpan $size={"2rem"} $weight={"700"} $color={"red"} $left={"20px"} >오류 발생</C.StSpan>; // or you can render an error message
+        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"} $color={"red"}>오류 발생</C.StSpan>; // or you can render an error message
     }
 
     return (
         <C.StMainSection>
             <D.StDetailContentSection>
-                <D.StDetail $bottom={"5px"}>
+                <D.StDetail>
                     <D.StDetailTitleItemArea>
                         <D.StDetailTitleItemTop>
                             {data.title}
@@ -211,9 +274,9 @@ function DetailLayout() {
                 </D.StDetailButtonArea>
             </D.StDetailContentSection>
             <D.StFavorite>
-                <D.FavoriteBtn onClick={handleToggleButtonClick}>
-                    <D.Favorite $clicked={clicked} />
-                </D.FavoriteBtn>
+                <D.StSvgBtn onClick={handleToggleButtonClick}>
+                    <D.Favorite $heartToggle={heartToggle} />
+                </D.StSvgBtn>
                 {data.likesList?.length}
             </D.StFavorite>
             <D.StDetailCommentSection>
@@ -238,15 +301,21 @@ function DetailLayout() {
                                             </C.StSpan>
                                             {isCurrentUser && (
                                                 <>
-                                                    <img alt="edit" src={Edit} onClick={() => handleCommentToggleButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
-                                                    <img alt="delete" src={Delete} style={{ height: "1.25rem" }} />
+                                                    <D.StSvgBtn>
+                                                        <D.StEditSvg alt="edit" src={Edit} $editToggle={comment.commentId === commentId} onClick={() => handleCommentToggleButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                                    </D.StSvgBtn>
+                                                    <D.StSvgBtn>
+                                                        <D.StDeleteSvg alt="delete" src={Delete} onClick={() => handleCommentDeleteButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                                    </D.StSvgBtn>
                                                 </>
                                             )}
                                         </D.StCommentListSide>
                                         <D.StCommentListSide>
-                                            <img alt="thumbup" src={Thumbup} style={{ height: "1.25rem" }} />
-                                            <C.StSpan $color={"gray"} $size={"0.875rem"}>
-                                                0
+                                            <D.StSvgBtn>
+                                                <D.StThumbUpSvg alt="thumbup" src={Thumbup} $thumbUpToggle={comment.likesList.includes(aud)} onClick={() => handleCommentLikeButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                            </D.StSvgBtn>
+                                            <C.StSpan $color={(comment.likesList?.length > 0) ? "blue" : "gray"} $size={"1rem"} $weight={"500"} $trans={true}>
+                                                {comment.likesList?.length}
                                             </C.StSpan>
                                         </D.StCommentListSide>
                                     </D.StCommentListItemBlock>
@@ -255,22 +324,27 @@ function DetailLayout() {
                                             {comment.comment}
                                         </C.StSpan>
                                     </D.StCommentListItemBlock>
-                                </D.StCommentListItem>
+                                </D.StCommentListItem >
                             )
                         })
                     )}
-                </D.StCommentList>
+                </D.StCommentList >
                 <D.StCommentForm>
-                    <C.StEditorInput $width={"100%"} $height={"40px"} $size={"1.125rem"} $weight={"500"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
                     {
-                        commentToggle && (
-                            <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>작성</C.StButton>
+                        !commentToggle && (
+                            <>
+                                <C.StEditorInput $width={"100%"} $height={"40px"} $size={"1.125rem"} $weight={"500"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
+                                <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>작성</C.StButton>
+                            </>
                         ) || (
-                            <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>수정</C.StButton>
+                            <>
+                                <C.StEditorInput $width={"100%"} $height={"40px"} $size={"1.125rem"} $weight={"500"} type="text" name="comment" value={comment} onChange={ChangeCommentHandler} placeholder="댓글 내용" />
+                                <C.StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={(event) => handleSubmitButtonClick(event)}>수정</C.StButton>
+                            </>
                         )
                     }
                 </D.StCommentForm>
-            </D.StDetailCommentSection>
+            </D.StDetailCommentSection >
         </C.StMainSection >
     )
 }

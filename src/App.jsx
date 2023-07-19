@@ -10,8 +10,8 @@ const queryClient = new QueryClient();
 
 const categoryData = [
   { boardId: 1, name: "자유게시판", path: "free"},
-  { boardId: 2, name: "SPRING", path: "spring" },
-  { boardId: 3, name: "REACT", path: "react" }
+  { boardId: 2, name: "REACT", path: "react" },
+  { boardId: 3, name: "SPRING", path: "spring" }
 ];
 
 function App() {
