@@ -34,8 +34,16 @@ export const StContentSection = styled.div`
 
 export const StP = styled.p`
     text-align: center;
-    font-size: ${({ size }) => size || "1.25rem"};
+    font-size: ${({ $size }) => $size || "1.25rem"};
     font-weight: 700;
+`
+
+
+export const StSpan = styled.span`    
+    color: ${({ $color }) => $color};
+
+    font-size: ${({ $size }) => $size};
+    font-weight: ${({ $weight }) => $weight};
 `
 
 export const StLoginForm = styled.form`
@@ -70,29 +78,29 @@ export const StInput = styled.input`
 `
 
 export const StButton = styled.button`
-    width: ${({ width }) => width || "inherit"};
-    min-width: ${({ width }) => width};
-    height: ${({ height }) => height || "50px"};
-    background-color: ${({ color }) => color || "#00ADB5"};
+    width: ${({ $width }) => $width || "inherit"};
+    min-width: ${({ $width }) => $width};
+    height: ${({ $height }) => $height || "50px"};
+    background-color: ${({ $color }) => $color || "#00ADB5"};
 
     border: transparent;
     border-radius: 10px;
     
-    font-size: ${({ size }) => size || "inherit"};
-    font-weight: ${({ weight }) => weight || "500"};
+    font-size: ${({ $size }) => $size || "inherit"};
+    font-weight: ${({ $weight }) => $weight || "500"};
     color: white;
 
     cursor: pointer;
     transition: all 0.5s;
 
     &:hover {
-        background-color: ${({hovercolor}) => hovercolor || "#0A8FCC"};
+        background-color: ${({$hover}) => $hover || "#0A8FCC"};
     }
 `
 
 export const StEditorInput = styled.input`
-    width: ${({ width }) => width || "inherit"};
-    height: ${({ height }) => height || "inherit"};
+    width: ${({ $width }) => $width || "inherit"};
+    height: ${({ $height }) => $height || "inherit"};
 
     border: 2px solid transparent;
     border-radius: 10px;
@@ -110,7 +118,7 @@ export const StEditorInput = styled.input`
 `
 
 export const StEditorTextarea = styled.textarea`
-    width: ${({ width }) => width || "inherit"};
+    width: ${({ $width }) => $width || "inherit"};
     height: auto;
     min-height: 300px;
 

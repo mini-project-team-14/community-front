@@ -5,19 +5,6 @@ import Footer from './Footer'
 import Navbar from './Navbar'
 import { styled } from 'styled-components'
 
-const StContainer = styled.div`
-    margin:0;
-    padding:0;
-    height:auto;
-    min-height: 100%;
-    min-width: 700px;
-    max-width: 1400px;
-    width:100%;
-    box-sizing: border-box;
-    padding-bottom: 50px;
-    margin: 0 auto;
-`
-
 function Layout() {
     return (
         <>
@@ -32,3 +19,16 @@ function Layout() {
 }
 
 export default Layout
+
+const StContainer = styled.div`
+    margin:0;
+    padding:0;
+    height:auto;
+    min-height: 100%;
+    min-width: 700px;
+    max-width: 1400px;
+    width:100%;
+    box-sizing: border-box;
+    padding-bottom: 50px;
+    margin: 0 auto;
+`

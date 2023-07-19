@@ -4,16 +4,19 @@ import RtanWelcome from '../../assets/images/rtan-welcome.png'
 import StyledLink from '../../styles/LinkStyle';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { getUsers } from '../../api/users';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import jwt_decode from "jwt-decode"
 
 function LoginForm() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const [, setCookie,] = useCookies(['login']);
+    // const [setCookie] = useCookies(['login']);
     // const { data } = useQuery("users", getUsers);
-    // const navigate = useNavigate();
 
     // 입력값을 감지하는 함수
     const onChangeHandler = (event) => {
@@ -40,6 +43,20 @@ function LoginForm() {
         }
     };
 
+    const loginUser = async (body) => {
+        await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/user/login`, body)
+            .then(response => {
+                const token = response.headers.authorization;
+                setCookie('login', token); // 쿠키
+                // localStorage.setItem('login', token); // 로컬
+                alert("로그인 성공!");
+                navigate(`/board/free`);
+            }).catch(error => {
+                console.log(error.response);
+                alert("로그인 실패!")
+            })
+    }
+
     // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
     const handleSubmitButtonClick = (event) => {
         // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역함
@@ -50,23 +67,17 @@ function LoginForm() {
             password
         }
 
-        axios.post(
-            `http://13.125.15.196:8080/api/user/login`, body
-        ).then(response => {
-            console.log(response.data);
-            // axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data;            
-        });
+        loginUser(body);
 
         // 아이디, 비밀번호, 이름이 모두 존재해야만 정상처리(하나라도 없는 경우 오류 발생)
         // "01" : 필수 입력값 검증 실패 안내
-        // if (!username || !password) {
-        //     return getErrorMsg("01", { username, password });
-        // }
+        if (!username || !password) {
+            return getErrorMsg("01", { username, password });
+        }
 
         // state 초기화
         setUsername("");
         setPassword("");
-        // alert("로그인 성공");
     };
 
     return (
@@ -75,7 +86,7 @@ function LoginForm() {
                 <C.StContentSection>
                     <img alt="logo" src={Logo} style={{ width: "250px" }} />
                     <img alt="rtanWelcome" src={RtanWelcome} />
-                    <C.StP size={"1.5rem"}>
+                    <C.StP $size={"1.5rem"}>
                         이노캠 커뮤니티에
                         <br />
                         오신 것을 환영합니다 😎
@@ -84,11 +95,11 @@ function LoginForm() {
                 <C.StLoginForm>
                     <C.StInput name="username" type="text" value={username} onChange={onChangeHandler} placeholder="아이디" />
                     <C.StInput name="password" type="password" value={password} onChange={onChangeHandler} placeholder="비밀번호" />
-                    <C.StButton onClick={handleSubmitButtonClick} size={"1.25rem"} weight={"700"}>로그인</C.StButton>
-                    <StyledLink to={`/signup`} color="#00ADB5">
+                    <C.StButton onClick={handleSubmitButtonClick} $size={"1.25rem"} $weight={"700"}>로그인</C.StButton>
+                    <StyledLink to={`/signup`} $color="#00ADB5">
                         회원가입
                     </StyledLink>
-                    <StyledLink to={`/board`} color="#00ADB5">
+                    <StyledLink to={`/board/free`} $color="#00ADB5">
                         게시판(임시)
                     </StyledLink>
                 </C.StLoginForm>

@@ -1,5 +1,6 @@
 // axios 요청이 들어가는 모든 모듈
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 // 조회
 const getUsers = async () => {
@@ -9,11 +10,12 @@ const getUsers = async () => {
 
 // 추가
 const addUser = async (newUser) => {
-    await axios.post(`http://13.125.15.196:8080/api/user/signup`, newUser)
-    .then(response => {
-        console.log(response);
-        console.log(response.data);
-    });
+    await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/user/signup`, newUser)
+        .then(response => {
+            console.log(response);
+            console.log(response.data);
+        });
 }
+
 
 export { getUsers, addUser };

@@ -9,7 +9,7 @@ const getPosts = async () => {
 
 // 추가
 const addPost = async (newPost) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/posts`, newPost);
+    await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/posts`, newPost);
 }
 
 // 수정
