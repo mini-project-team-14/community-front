@@ -15,7 +15,7 @@ function expireCookie(name) {
 
 function Header() {
     const navigate = useNavigate();
-    const [cookies, , ] = useCookies(['accessToken', 'refreshToken'])
+    const [cookies, ,] = useCookies(['accessToken', 'refreshToken'])
     const handleLogoutButtonClick = () => {
         // removeCookie('login');
         expireCookie('accessToken');
@@ -23,14 +23,11 @@ function Header() {
         alert("로그아웃!")
         navigate("/")
     }
-
-    try {
-        const { aud } = jwt_decode(cookies.accessToken);
-        console.log(aud);
-    } catch (error) {
-        // 예외가 발생한 경우 처리할 코드 작성
-        console.error("Invalid token specified:", error.message);
-        // 또는 원하는 대체 처리를 수행할 수 있습니다.
+    
+    let aud = ""
+    if (cookies.accessToken) {
+        const decodedToken = jwt_decode(cookies.accessToken);
+        aud = decodedToken.aud;
     }
 
     return (
@@ -50,14 +47,12 @@ function Header() {
                     ) : (
                         <>
                             <StSpan $color={"#00ADB5"} $weight={"700"}>
-                                {/* {aud} */}
+                                {aud}
                             </StSpan>
                             <StSpan>
                                 님 환영합니다
                             </StSpan>
-                            {/* <Link to="/"> */}
                             <img alt="logout" onClick={handleLogoutButtonClick} src={Logout} style={{ height: "36px", cursor: "pointer" }} />
-                            {/* </Link> */}
                         </>
                     )
                 }

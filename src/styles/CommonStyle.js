@@ -143,7 +143,6 @@ export const StMainSection = styled.div`
     flex-direction: column;
 
     height: auto;
-    min-height: 300px;
     background-color: ${({ $backColor }) => $backColor || "#D4D4D4"};
 
     border-radius: 10px;
