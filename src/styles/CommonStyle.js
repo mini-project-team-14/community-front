@@ -91,9 +91,10 @@ export const StButton = styled.button`
     font-weight: ${({ $weight }) => $weight || "500"};
     color: white;
 
-    cursor: pointer;
+    cursor: ${({ $disabled }) => $disabled ? "" : "pointer"};
     transition: all 0.5s;
-
+    opacity: ${({ $disabled }) => $disabled ? 0 : 1};
+    
     &:hover {
         background-color: ${({ $hover }) => $hover || "#0A8FCC"};
     }
@@ -120,7 +121,6 @@ export const StEditorInput = styled.input`
 
 export const StEditorTextarea = styled.textarea`
     width: ${({ $width }) => $width || "inherit"};
-    height: auto;
     min-height: 300px;
 
     border: 2px solid transparent;

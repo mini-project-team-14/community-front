@@ -9,10 +9,26 @@ import CategoryContext from './assets/context/CategoryContext';
 const queryClient = new QueryClient();
 
 const categoryData = [
-  { boardId: 1, name: "자유게시판", path: "free"},
-  { boardId: 2, name: "REACT", path: "react" },
-  { boardId: 3, name: "SPRING", path: "spring" }
+  { boardId: 1, name: "자유게시판", path: "free" },
+  { boardId: 2, name: "SPRING", path: "spring" },
+  { boardId: 3, name: "REACT", path: "react" }
 ];
+const categoryPath = {
+  free: {
+    boardId: 1,
+    name: "자유게시판"
+  },
+  spring: {
+    boardId: 2,
+    name: "SPRING"
+  },
+  react: {
+    boardId: 3,
+    name: "REACT"
+  },
+}
+
+
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['cookie-name']);

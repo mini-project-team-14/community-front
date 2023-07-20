@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
-// import { styled } from 'styled-components'
+import React from 'react'
 import * as C from '../../styles/CommonStyle'
 import * as D from '../../styles/DetailStyle'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery } from 'react-query';
-import "../../styles/Editor.css"
+import { useQuery, useQueryClient } from 'react-query';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useCategoryContext } from '../../assets/context/CategoryContext';
@@ -13,38 +11,34 @@ function BoardLayout() {
   const [cookies, ,] = useCookies(['login']);
   const category = useCategoryContext();
   const { path } = useParams();
+  const boardId = category.find(category => category.path === path).boardId;
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [boardId, setBoardId] = useState(1);
-
-  // path가 바뀔 때 마다 boardID 변경
-  useEffect(() => {
-    setBoardId(category.find(category => category.path === path).boardId);
-  }, [path, category]);
-
+  // console.log(queryClient);
+  
   const { data, isLoading, isError } = useQuery(
     {
-      queryKey: ["boards", boardId], // "boards"와 boardId가 바뀔 때마다 수행?
+      queryKey: ["boards", boardId],
       queryFn: (
         async () => {
-          // console.log("board", boardId);
           const response = await axios.get(
             `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}`,
             {
               headers: { 
-                Authorization: `Bearer ${cookies.accessToken}`,
+                AccessToken: `Bearer ${cookies.accessToken}`,
                 RefreshToken: `Bearer ${cookies.refreshToken}`
               }
-              // Accesstoken: cookies.accessToken,
-              // Refreshtoken: cookies.refreshToken
             }
           )
-          // console.log(response);
-          // console.log(response.data);
           return response.data;
         }
       )
     },
     {
+      refetchOnMount: 'always',
+      initialData: () => {
+        return queryClient.invalidateQueries(["boards", boardId]);
+      },
       enabled: !!path
     }
   );
@@ -52,6 +46,7 @@ function BoardLayout() {
   if (isLoading) {
     return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩 중..</C.StSpan>
   }
+
   if (isError) {
     return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"} $color={"red"}>오류 발생</C.StSpan>
   }
@@ -61,7 +56,9 @@ function BoardLayout() {
       <D.StDetailContentSection $gap={"10px"}>
       {
         data.length === 0 ? (
-          <div>작성된 글이 없습니다.</div>
+          <D.StDetail>
+            작성된 글이 없습니다.
+          </D.StDetail>
         ) : (
           data.map((item) => {
             return (
@@ -100,111 +97,3 @@ function BoardLayout() {
 }
 
 export default BoardLayout
-
-
-      {/* <StTable>
-        <StTHead>
-          <StTr>
-            <StTh $width="55%">제목</StTh>
-            <StTh $width="10%">작성자</StTh>
-            <StTh $width="20%">작성시간</StTh>
-            <StTh $width="30px">댓글</StTh>
-            <StTh $width="30px">좋아요</StTh>
-          </StTr>
-        </StTHead>
-        <StTbody>
-          <StTr>
-            <StTd $width="55%">아무튼 제목임</StTd>
-            <StTd $width="10%">김OO</StTd>
-            <StTd $width="20%">2023-07-19 오후 4:21</StTd>
-            <StTd $width="30px">1</StTd>
-            <StTd $width="30px">0</StTd>
-          </StTr>
-          <StTr>
-            <StTd $width="55%">아무튼 제목임</StTd>
-            <StTd $width="10%">김OO</StTd>
-            <StTd $width="20%">2023-07-19 오후 4:21</StTd>
-            <StTd $width="30px">1</StTd>
-            <StTd $width="30px">0</StTd>
-          </StTr>
-          <StTr>
-            <StTd $width="55%">아무튼 제목임</StTd>
-            <StTd $width="10%">김OO</StTd>
-            <StTd $width="20%">2023-07-19 오후 4:21</StTd>
-            <StTd $width="30px">1</StTd>
-            <StTd $width="30px">0</StTd>
-          </StTr>
-        </StTbody>
-      </StTable> */}
-      {/* <div className="board-container">
-        <table className="table">
-          <tbody>
-            <tr>
-              <th>제목</th>
-              <th>글쓴이</th>
-              <th>작성시간</th>
-              <th>댓글 수</th>
-              <th>좋아요</th>
-            </tr>
-            {
-              data?.length === 0 ? (
-                <tr><td>작성된 글이 없습니다.</td></tr>
-              ) : (
-                data?.map((item) => {
-                  return (
-                    <tr key={item.postId} onClick={() => navigate(`./${item.postId}`)}>
-                      <td>{item.title}</td>
-                      <td>{item.nickname}</td>
-                      <td>{item.createdAt}</td>
-                      <td>{item.comments.length}</td>
-                      <td>{item.likesList.length}</td>
-                    </tr>
-                  );
-                })
-              )
-            }
-          </tbody>
-        </table>
-        <button onClick={() => navigate("./editor")}>작성</button>
-      </div> */}
-
-// const StTable = styled.table`
-//   border-radius: 10px;
-//   /* background-color: white; */
-  
-//   text-align: center;
-
-//   box-sizing: border-box;
-//   padding: 0;
-//   margin: 0;
-// `
-// const StTHead = styled.thead`
-//   border-bottom: 1px solid black;
-//   /* background-color: #d4d4d4; */
-// `
-// const StTbody = styled.tbody`
-//   border-bottom: 1px solid black;
-// `
-// const StTr = styled.tr`
-//   width: inherit;
-//   height: auto;
-//   min-height: 30px;
-//   background-color: white;
-
-//   box-sizing: border-box;
-// `
-// const StTh = styled.th`
-//   width: ${({ $width }) => $width};
-//   border-collapse: collapse;
-//   border-bottom: 1px solid black;
-// `
-
-// const StTd = styled.td`
-//   width: ${({ $width }) => $width};
-//   border-collapse: collapse;
-//   border-bottom: 1px solid black;
-
-//   &:last-child {
-//     /* border-bottom: 1px solid black; */
-//   }
-// `

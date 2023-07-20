@@ -4,12 +4,10 @@ import { styled } from 'styled-components'
 function Footer() {
     return (
         <StFooter>
-            <div>
-                <span>Team 14</span>
-            </div>
-            <StRelatedSite>
+            Team 14
+            {/* <StRelatedSite>
                 <span>관련 사이트</span>
-            </StRelatedSite>
+            </StRelatedSite> */}
         </StFooter>
     )
 }
@@ -34,15 +32,15 @@ const StFooter = styled.div`
     box-sizing: border-box;
 `
 
-const StRelatedSite = styled.div`
-    display: flex;
-    align-items: center;
-    width: 150px;
+// const StRelatedSite = styled.div`
+//     display: flex;
+//     align-items: center;
+//     width: 150px;
     
-    border: 1px solid #eeeeee;
-    background-color: transparent;
-    color: #eeeeee;
-    font-size: 0.9rem;
+//     border: 1px solid #eeeeee;
+//     background-color: transparent;
+//     color: #eeeeee;
+//     font-size: 0.9rem;
     
-    padding: 5px 10px;
-`
+//     padding: 5px 10px;
+// `

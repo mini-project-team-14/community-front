@@ -18,8 +18,8 @@ export const StDetail = styled.div`
     justify-content: space-between;
 
     width: 100%;
-    height: ${({ height }) => height || "auto"};
-    min-height: ${({ height }) => height || "70px"};
+    height: auto;
+    min-height: ${({ $height }) => $height || "70px"};
 
     background-color: white;
     border: 2px solid transparent;

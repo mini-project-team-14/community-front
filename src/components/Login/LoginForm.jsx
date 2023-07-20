@@ -2,23 +2,17 @@ import * as C from '../../styles/CommonStyle'
 import Logo from '../../assets/images/logo500.png'
 import RtanWelcome from '../../assets/images/rtan-welcome.png'
 import StyledLink from '../../styles/LinkStyle';
-import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import jwt_decode from "jwt-decode"
 
 function LoginForm() {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [, setCookie, ] = useCookies(['accessToken']);
 
-    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
-    // const [setCookie] = useCookies(['login']);
-    // const { data } = useQuery("users", getUsers);
-
-    // 입력값을 감지하는 함수
     const onChangeHandler = (event) => {
         if (event.target.name === "username") {
             setUsername(event.target.value)
@@ -27,7 +21,6 @@ function LoginForm() {
         }
     };
 
-    // 에러 메시지 발생 함수
     const getErrorMsg = (errorCode, params) => {
         switch (errorCode) {
             case "01":
@@ -53,9 +46,9 @@ function LoginForm() {
                 const refreshToken = response.headers.refreshtoken.split(" ")[1];
 
                 // 쿠키에 저장
-                setCookie('accessToken', accessToken);
-                setCookie('refreshToken', refreshToken);
-                
+                setCookie('accessToken', accessToken, { path: "/" });
+                setCookie('refreshToken', refreshToken, { path: "/" });
+
                 alert("로그인 성공!");
                 navigate(`/board/free`);
             }).catch(error => {
@@ -74,15 +67,14 @@ function LoginForm() {
             password
         }
 
-        loginUser(body);
-
         // 아이디, 비밀번호, 이름이 모두 존재해야만 정상처리(하나라도 없는 경우 오류 발생)
         // "01" : 필수 입력값 검증 실패 안내
         if (!username || !password) {
             return getErrorMsg("01", { username, password });
         }
 
-        // state 초기화
+        loginUser(body);
+        
         setUsername("");
         setPassword("");
     };
@@ -106,9 +98,9 @@ function LoginForm() {
                     <StyledLink to={`/signup`} $color="#00ADB5">
                         회원가입
                     </StyledLink>
-                    <StyledLink to={`/board/free`} $color="#00ADB5">
+                    {/* <StyledLink to={`/board/free`} $color="#00ADB5">
                         게시판(임시)
-                    </StyledLink>
+                    </StyledLink> */}
                 </C.StLoginForm>
             </C.StContentWrapper>
         </C.StContainer>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as C from '../../styles/CommonStyle';
@@ -9,41 +9,39 @@ import { useCategoryContext } from '../../assets/context/CategoryContext';
 
 function EditorForm() {
     const queryClient = useQueryClient();
+    const category = useCategoryContext();
     const { path, id } = useParams();
+    const boardId = category.find(category => category.path === path).boardId;
     const navigate = useNavigate();
-    const [boardId, setBoardId] = useState();
     const [cookies, ,] = useCookies(['login']);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const category = useCategoryContext();
+
     const isEdit = !!id;
 
-    useEffect(() => {
-        setBoardId(category.find(category => category.path === path).boardId);
-    }, [path]);
-
-    // console.log("editor", boardId);
-
-    // const { data, isLoading, isError } = useQuery(
-    //     ["posts", id],
-    //     {
-    //         queryFn: async () => {
-    //             const response = await axios.get(
-    //                 `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
-    //                 {
-    //                     headers: { Authorization: cookies.login }
-    //                 }
-    //             )
-    //             setTitle(response.data.title);
-    //             setContent(response.data.content);
-    //             return response.data;
-    //         },
-    //         enabled: isEdit,
-    //     }
-    // );
+    const { data, isLoading, isError } = useQuery(
+        ["posts", id],
+        {
+            queryFn: async () => {
+                const response = await axios.get(
+                    `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
+                    {
+                        headers: {
+                            AccessToken: `Bearer ${cookies.accessToken}`,
+                            RefreshToken: `Bearer ${cookies.refreshToken}`
+                        }
+                    }
+                )
+                setTitle(response.data.title);
+                setContent(response.data.content);
+                return response.data;
+            },
+            enabled: isEdit,
+        }
+    );
 
     // 에러 메시지 발생 함수
-    const getErrorMsg = (errorCode, params) => {
+    const getErrorMsg = (errorCode) => {
         switch (errorCode) {
             case "01":
                 return alert(
@@ -69,7 +67,7 @@ function EditorForm() {
                 {
                     // headers: { Authorization: cookies.login }
                     headers: {
-                        Authorization: `Bearer ${cookies.accessToken}`,
+                        AccessToken: `Bearer ${cookies.accessToken}`,
                         RefreshToken: `Bearer ${cookies.refreshToken}`
                     }
                 }
@@ -82,21 +80,24 @@ function EditorForm() {
         }
     }
 
-    // const updatePostData = async (updatePost) => {
-    //     try {
-    //         axios.put(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`, updatePost,
-    //             {
-    //                 headers: { Authorization: cookies.login }
-    //             }
-    //         )
-    //         alert("수정 성공!");
-    //         queryClient.invalidateQueries(["posts", id]);
-    //         navigate(-1);
-    //     } catch (error) {
-    //         console.log(error.response);
-    //         alert("수정 실패!");
-    //     }
-    // }
+    const updatePostData = async (updatePost) => {
+        try {
+            axios.put(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`, updatePost,
+                {
+                    headers: {
+                        AccessToken: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
+                }
+            )
+            alert("수정 성공!");
+            queryClient.invalidateQueries(["posts", id]);
+            navigate(-1);
+        } catch (error) {
+            console.log(error.response);
+            alert("수정 실패!");
+        }
+    }
 
     // form 태그 내부에서의 submit이 실행된 경우 호출되는 함수
     const handleButtonClick = (event) => {
@@ -115,7 +116,7 @@ function EditorForm() {
         };
 
         if (isEdit) {
-            // updatePostData(post); // 수정 모드일 경우 수정 API 호출
+            updatePostData(post); // 수정 모드일 경우 수정 API 호출
         } else {
             addPost(post); // 작성 모드일 경우 작성 API 호출
         }
@@ -128,6 +129,13 @@ function EditorForm() {
         // 이전 화면으로 이동
         navigate(-1);
     };
+
+    if (isLoading) {
+        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"}>로딩 중..</C.StSpan>
+    }
+    if (isError) {
+        return <C.StSpan $size={"2rem"} $weight={"700"} $left={"20px"} $color={"red"}>오류 발생</C.StSpan>
+    }
 
     return (
         <C.StMainSection>
