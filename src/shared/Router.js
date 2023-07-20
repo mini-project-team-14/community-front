@@ -14,14 +14,10 @@ function Router() {
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route element={<Layout />}>
-                    <Route path="/board" element={<Board />} />
                     <Route path="/board/:path" element={<Board />} />
-                    {/* <Route path="/board/:path/detail/:id" element={<Detail />} /> */}
                     <Route path="/board/:path/:id" element={<Detail />} />
-                    {/* <Route path="/editor" element={<Editor />} /> */}
                     <Route path="/board/:path/editor" element={<Editor />} />
                     <Route path="/board/:path/editor/:id" element={<Editor />} />
-                    <Route path="/board/:path/:id/editor" element={<Editor />} />
                 </Route>
             </Routes>
         </BrowserRouter>

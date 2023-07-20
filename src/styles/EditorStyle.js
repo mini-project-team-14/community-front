@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-export const StEditorForm = styled.form`
+export const StEditorForm = styled.div`
     display: flex;
     flex-direction: column;
 
@@ -9,7 +9,7 @@ export const StEditorForm = styled.form`
     gap: 10px;
 `
 
-export const StEditorInputSection = styled.form`
+export const StEditorInputSection = styled.div`
     display: flex;
     flex-direction: column;
 
@@ -18,7 +18,7 @@ export const StEditorInputSection = styled.form`
     gap: 10px;
 `
 
-export const StEditorButtonSection = styled.form`
+export const StEditorButtonSection = styled.div`
     display: flex;
     justify-content: space-between;
 

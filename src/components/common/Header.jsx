@@ -1,29 +1,25 @@
 import React from 'react'
-// import Home from '../../assets/images/home.png'
 import Logo from '../../assets/images/logo500.png'
-import Logout from '../../assets/images/logout.png'
+import Login from '../../assets/images/icon/login.png'
+import Logout from '../../assets/images/icon/logout.png'
 import { styled } from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import jwt_decode from "jwt-decode"
 import { StSpan } from '../../styles/CommonStyle'
 
-// 쿠키(accessToken, refreshToken)를 만료시키는 함수
-function expireCookie(name) {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-}
-
 function Header() {
     const navigate = useNavigate();
-    const [cookies, ,] = useCookies(['accessToken', 'refreshToken'])
+    const [cookies, , removeCookie] = useCookies(['accessToken', 'refreshToken'])
     const handleLogoutButtonClick = () => {
-        // removeCookie('login');
-        expireCookie('accessToken');
-        expireCookie('refreshToken');
-        alert("로그아웃!")
-        navigate("/")
+        if (window.confirm("로그아웃 하시겠습니까?")) {
+            removeCookie('accessToken', { path: "/" })
+            removeCookie('refreshToken', { path: "/" })
+            alert("로그아웃!")
+            navigate("/")
+        }
     }
-    
+
     let aud = ""
     if (cookies.accessToken) {
         const decodedToken = jwt_decode(cookies.accessToken);
@@ -33,7 +29,6 @@ function Header() {
     return (
         <StHeaderContainer>
             <StHeaderLeft>
-                {/* <img alt="back" src={Home} style={{ height: "36px" }} /> */}
                 <Link to="/board/free">
                     <img alt="logo" src={Logo} style={{ height: "36px" }} />
                 </Link>
@@ -41,9 +36,12 @@ function Header() {
             <StHeaderRight>
                 {
                     (Boolean(cookies.accessToken) === false) ? (
-                        <StSpan $color={"red"} $weight={"700"}>
-                            잘못된 접근입니다.
-                        </StSpan>
+                        <>
+                            <StSpan $color={"red"} $weight={"700"}>
+                                잘못된 접근입니다. 로그인 하세요.
+                            </StSpan>
+                            <img alt="login" onClick={() => navigate("/")} src={Login} style={{ height: "36px", cursor: "pointer" }} />
+                        </>
                     ) : (
                         <>
                             <StSpan $color={"#00ADB5"} $weight={"700"}>
@@ -52,7 +50,7 @@ function Header() {
                             <StSpan>
                                 님 환영합니다
                             </StSpan>
-                            <img alt="logout" onClick={handleLogoutButtonClick} src={Logout} style={{ height: "36px", cursor: "pointer" }} />
+                            <img alt="logout" onClick={handleLogoutButtonClick} src={Logout} style={{ height: "36px", marginLeft: "10px", cursor: "pointer" }} />
                         </>
                     )
                 }
@@ -87,6 +85,4 @@ const StHeaderRight = styled.div`
     align-items: center;
 
     font-size: 1.5rem;
-
-    gap: 6px;
 `

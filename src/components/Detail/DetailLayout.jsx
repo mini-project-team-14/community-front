@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import Thumbup from '../../assets/images/icon/thumbup.png'
-import Delete from '../../assets/images/icon/delete.png'
-import Edit from '../../assets/images/icon/edit.png'
+import React, { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as C from '../../styles/CommonStyle';
@@ -15,45 +12,36 @@ function DetailLayout() {
     const [cookies, ,] = useCookies(['login']);
     const { path, id } = useParams();
     const category = useCategoryContext();
+    const boardId = category.find(category => category.path === path).boardId;
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [heartToggle, setHeartToggle] = useState(false);
     const [commentToggle, setCommentToggle] = useState(false);
     const [thumbUpToggle, setThumbUpToggle] = useState(false);
     const [commentId, setCommentId] = useState();
-    const [boardId, setBoardId] = useState(null);
     const [comment, setComment] = useState("");
     const { aud } = jwt_decode(cookies.accessToken);
-    // const { aud } = jwt_decode(cookies.login);
 
-    useEffect(() => {
-        setBoardId(category.find(category => category.path === path).boardId);
-        setCommentToggle(false);
-    }, [path]);
-    // console.log("detail", boardId);
-
-    const { data, isLoading, isError } = useQuery(["posts", boardId],
+    const { data, isLoading, isError } = useQuery(
+        ["posts", id],
         async () => {
-            // console.log("detail", boardId);
             const response = await axios.get(
                 `${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${cookies.accessToken}`,
+                        AccessToken: `Bearer ${cookies.accessToken}`,
                         RefreshToken: `Bearer ${cookies.refreshToken}`
                     }
                 }
             )
-            // console.log(response)
-            // console.log(response.data.likesList.includes(aud))
             setHeartToggle(response.data.likesList.includes(aud))
             return response.data;
         },
-        {
-            initialData: () => {
-                return queryClient.getQueryData(["posts", id]);
-            }
-        }
+        // {
+        //     initialData: () => {
+        //         return queryClient.getQueryData(["boards", boardId]);
+        //     }
+        // }
     );
 
     // 삭제
@@ -61,7 +49,7 @@ function DetailLayout() {
         await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}`,
             {
                 headers: {
-                    Authorization: `Bearer ${cookies.accessToken}`,
+                    AccessToken: `Bearer ${cookies.accessToken}`,
                     RefreshToken: `Bearer ${cookies.refreshToken}`
                 }
             }
@@ -70,7 +58,7 @@ function DetailLayout() {
 
     const deleteMutation = useMutation(deletePost, {
         onSuccess: () => {
-            queryClient.invalidateQueries(["boards"]);
+            queryClient.invalidateQueries(["boards", boardId]);
         }
     })
 
@@ -79,7 +67,7 @@ function DetailLayout() {
         await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/like`, null,
             {
                 headers: {
-                    Authorization: `Bearer ${cookies.accessToken}`,
+                    AccessToken: `Bearer ${cookies.accessToken}`,
                     RefreshToken: `Bearer ${cookies.refreshToken}`
                 }
             }
@@ -91,7 +79,7 @@ function DetailLayout() {
         await axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}/like`, null,
             {
                 headers: {
-                    Authorization: `Bearer ${cookies.accessToken}`,
+                    AccessToken: `Bearer ${cookies.accessToken}`,
                     RefreshToken: `Bearer ${cookies.refreshToken}`
                 }
             }
@@ -111,7 +99,7 @@ function DetailLayout() {
     })
 
     // 에러 메시지 발생 함수
-    const getErrorMsg = (errorCode, params) => {
+    const getErrorMsg = (errorCode) => {
         switch (errorCode) {
             case "01":
                 return alert(
@@ -129,23 +117,23 @@ function DetailLayout() {
 
     // 댓글 작성, 수정
     const handleSubmitButtonClick = (event) => {
-        // submit의 고유 기능인, 새로고침(refresh)을 막아주는 역할
         event.preventDefault();
 
         // 댓글이 존재해야만 정상처리
-        // "01" : 필수 입력값 검증 실패 안내
+        // "01" : 필수 입력 값 검증 실패 안내
         if (!comment) {
-            return getErrorMsg("01", { comment });
+            return getErrorMsg("01");
         }
 
         const newComment = {
             comment
         }
+
         if (!commentToggle) {
             axios.post(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments`, newComment,
                 {
                     headers: {
-                        Authorization: `Bearer ${cookies.accessToken}`,
+                        AccessToken: `Bearer ${cookies.accessToken}`,
                         RefreshToken: `Bearer ${cookies.refreshToken}`
                     }
                 }
@@ -155,12 +143,13 @@ function DetailLayout() {
             axios.put(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}`, newComment,
                 {
                     headers: {
-                        Authorization: `Bearer ${cookies.accessToken}`,
+                        AccessToken: `Bearer ${cookies.accessToken}`,
                         RefreshToken: `Bearer ${cookies.refreshToken}`
                     }
                 }
             )
             setCommentToggle(false);
+            setCommentId();
             alert("댓글 수정 성공");
         }
         setComment("");
@@ -171,9 +160,11 @@ function DetailLayout() {
     };
 
     const handleDeleteButtonClick = () => {
-        deleteMutation.mutate(id);
-        alert("삭제 완료");
-        navigate(-1);
+        if (window.confirm("정말로 게시글을 삭제하시겠습니까?")) {
+            deleteMutation.mutate(id);
+            alert("삭제 완료");
+            navigate(-1);
+        }
     };
 
     // 게시글 좋아요 토글
@@ -200,15 +191,17 @@ function DetailLayout() {
 
     // 댓글 삭제
     const handleCommentDeleteButtonClick = async (commentId) => {
-        await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${cookies.accessToken}`,
-                    RefreshToken: `Bearer ${cookies.refreshToken}`
+        if (window.confirm("정말로 댓글을 삭제하시겠습니까?")) {
+            await axios.delete(`${process.env.REACT_APP_BACK_SERVER_URL}/api/boards/${boardId}/posts/${id}/comments/${commentId}`,
+                {
+                    headers: {
+                        AccessToken: `Bearer ${cookies.accessToken}`,
+                        RefreshToken: `Bearer ${cookies.refreshToken}`
+                    }
                 }
-            }
-        )
-        alert("댓글 삭제 완료");
+            )
+            alert("댓글 삭제 완료");
+        }
     }
 
     // 댓글 좋아요
@@ -254,7 +247,7 @@ function DetailLayout() {
                         </D.StDetailTitleItemBottom>
                     </D.StDetailTitleItemArea>
                 </D.StDetail>
-                <D.StDetail height={"300px"}>
+                <D.StDetail $height={"300px"}>
                     {data.content}
                 </D.StDetail>
                 <D.StDetailButtonArea>
@@ -263,14 +256,18 @@ function DetailLayout() {
                             목록
                         </C.StButton>
                     </D.StDetailButtonAreaChild>
-                    <D.StDetailButtonAreaChild>
-                        <C.StButton $width={"50px"} $height={"30px"} onClick={handleUpdateButtonClick}>
-                            수정
-                        </C.StButton>
-                        <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"} onClick={handleDeleteButtonClick}>
-                            삭제
-                        </C.StButton>
-                    </D.StDetailButtonAreaChild>
+                    {
+                        (aud === data.nickname) && (
+                            <D.StDetailButtonAreaChild>
+                                <C.StButton $width={"50px"} $height={"30px"} onClick={handleUpdateButtonClick}>
+                                    수정
+                                </C.StButton>
+                                <C.StButton $width={"50px"} $height={"30px"} $color={"gray"} $hover={"black"} onClick={handleDeleteButtonClick}>
+                                    삭제
+                                </C.StButton>
+                            </D.StDetailButtonAreaChild>
+                        )
+                    }
                 </D.StDetailButtonArea>
             </D.StDetailContentSection>
             <D.StFavorite>
@@ -302,17 +299,17 @@ function DetailLayout() {
                                             {isCurrentUser && (
                                                 <>
                                                     <D.StSvgBtn>
-                                                        <D.StEditSvg alt="edit" src={Edit} $editToggle={comment.commentId === commentId} onClick={() => handleCommentToggleButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                                        <D.StEditSvg alt="edit" $editToggle={comment.commentId === commentId} onClick={() => handleCommentToggleButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
                                                     </D.StSvgBtn>
                                                     <D.StSvgBtn>
-                                                        <D.StDeleteSvg alt="delete" src={Delete} onClick={() => handleCommentDeleteButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                                        <D.StDeleteSvg alt="delete" onClick={() => handleCommentDeleteButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
                                                     </D.StSvgBtn>
                                                 </>
                                             )}
                                         </D.StCommentListSide>
                                         <D.StCommentListSide>
                                             <D.StSvgBtn>
-                                                <D.StThumbUpSvg alt="thumbup" src={Thumbup} $thumbUpToggle={comment.likesList.includes(aud)} onClick={() => handleCommentLikeButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
+                                                <D.StThumbUpSvg alt="thumbup" $thumbUpToggle={comment.likesList.includes(aud)} onClick={() => handleCommentLikeButtonClick(comment.commentId)} style={{ height: "1.25rem" }} />
                                             </D.StSvgBtn>
                                             <C.StSpan $color={(comment.likesList?.length > 0) ? "blue" : "gray"} $size={"1rem"} $weight={"500"} $trans={true}>
                                                 {comment.likesList?.length}

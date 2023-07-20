@@ -7,7 +7,10 @@ import { StButton } from '../../styles/CommonStyle.js';
 function Navbar() {
     const { path } = useParams();
     const category = useCategoryContext();
+    // const boardId = category[path].boardId;
+    // console.log(boardId);
     const navigate = useNavigate();
+    const disabled = window.location.href.includes("editor");
 
     return (
         <StNavbarWrapper>
@@ -24,11 +27,7 @@ function Navbar() {
                     }
                 </StNavbarSide>
                 <StNavbarSide>
-                    {
-                        (!window.location.href.includes("editor")) && (
-                            <StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={() => navigate(`./board/${path}/editor`)}>작성</StButton>
-                        )
-                    }
+                    <StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={() => navigate(`./board/${path}/editor`)} disabled={disabled} $disabled={disabled}>작성</StButton>
                 </StNavbarSide>
             </StNavbar>
         </StNavbarWrapper>
