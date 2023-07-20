@@ -11,7 +11,6 @@ function Navbar() {
 
     return (
         <StNavbarWrapper>
-
             <StNavbar>
                 <StNavbarSide>
                     {
@@ -25,7 +24,11 @@ function Navbar() {
                     }
                 </StNavbarSide>
                 <StNavbarSide>
-                    <StButton $width={"70px"} $height={"40px"} $size={"1.25rem"} onClick={() => navigate(`./board/${path}/editor`)}>작성</StButton>
+                    {
+                        (!window.location.href.includes("editor")) && (
+                            <StButton $width={"70px"} $height={"40px"} $size={"1.125rem"} onClick={() => navigate(`./board/${path}/editor`)}>작성</StButton>
+                        )
+                    }
                 </StNavbarSide>
             </StNavbar>
         </StNavbarWrapper>
@@ -50,7 +53,6 @@ const StNavbar = styled.div`
 
     border: 3px solid transparent;
     border-radius: 10px;
-    /* border-bottom: 3px solid gray; */
 
     box-sizing: border-box;
     margin: 0 20px;
@@ -62,9 +64,6 @@ const StNavbarSide = styled.div`
     align-items: center;
     
     height: 56px;
-
-    font-size: 1.5rem;
-    font-weight: 500;
 
     box-sizing: border-box;
     gap: 20px;
@@ -78,6 +77,7 @@ const StNavList = styled.div`
     height: inherit;
 
     font-size: 1.25rem;
+    font-weight: 500;
     color: ${({ $border }) => $border ? "#03F2FD" : "#eeeeee"};
 
     border-bottom: 4px solid ${({ $border }) => $border ? "#03F2FD" : "transparent"};
